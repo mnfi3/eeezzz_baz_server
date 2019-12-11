@@ -1,0 +1,38 @@
+@font-face {
+  font-family: 'IRANSans-web';
+  src: url("../fonts/IranSansarif/IRANSans-Bold-web.eot");
+  src: url("../fonts/IranSansarif/IRANSans-Bold-web.eot?#iefix") format("eot"), url("../fonts/IranSansarif/IRANSans-Bold-web.woff2") format("woff2"), url("../fonts/IranSansarif/IRANSans-Bold-web.woff") format("woff"), url("../fonts/IranSansarif/IRANSans-Bold-web.ttf") format("ttf");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'IRANSans-web';
+  src: url("../fonts/IranSansarif/IRANSans-Medium-web.eot");
+  src: url("../fonts/IranSansarif/IRANSans-Medium-web.eot?#iefix") format("eot"), url("../fonts/IranSansarif/IRANSans-Medium-web.woff2") format("woff2"), url("../fonts/IranSansarif/IRANSans-Medium-web.woff") format("woff"), url("../fonts/IranSansarif/IRANSans-Medium-web.ttf") format("ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'IRANSans-web';
+  src: url("../fonts/IranSansarif/IRANSans-UltraLight-web.eot");
+  src: url("../fonts/IranSansarif/IRANSans-UltraLight-web.eot?#iefix") format("eot"), url("../fonts/IranSansarif/IRANSans-UltraLight-web.woff2") format("woff2"), url("../fonts/IranSansarif/IRANSans-UltraLight-web.woff") format("woff"), url("../fonts/IranSansarif/IRANSans-UltraLight-web.ttf") format("ttf");
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: 'IRANSans-web';
+  src: url("../fonts/IranSansarif/IRANSans-Light-web.eot");
+  src: url("../fonts/IranSansarif/IRANSans-Light-web.eot?#iefix") format("eot"), url("../fonts/IranSansarif/IRANSans-Light-web.woff2") format("woff2"), url("../fonts/IranSansarif/IRANSans-Light-web.woff") format("woff"), url("../fonts/IranSansarif/IRANSans-Light-web.ttf") format("ttf");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'IRANSans-web';
+  src: url("../fonts/IranSansarif/IRANSans-web.eot");
+  src: url("../fonts/IranSansarif/IRANSans-web.eot?#iefix") format("eot"), url("../fonts/IranSansarif/IRANSans-web.woff2") format("woff2"), url("../fonts/IranSansarif/IRANSans-web.woff") format("woff"), url("../fonts/IranSansarif/IRANSans-web.ttf") format("ttf");
+  font-weight: normal;
+}
+
+body {
+  font-family: IRANSans-web;
+}
