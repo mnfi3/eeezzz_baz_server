@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminHelper extends Controller
 {
-    public static function isAdmin(){
-      $user = Auth::user();
+    public static function isAdmin($user = '0'){
+      if ($user == '0') $user = Auth::user();
+
       if($user !== null){
         $roles = $user->roles;
         foreach ($roles as $role){
@@ -19,5 +20,15 @@ class AdminHelper extends Controller
         }
       }
       return false;
+    }
+
+
+    public static function isStaff($user = '0'){
+      if ($user == '0') $user = Auth::user();
+      if($user !== null) {
+        $roles = $user->roles;
+        if (count($roles) > 0) return true;
+        return false;
+      }
     }
 }

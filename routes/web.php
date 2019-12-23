@@ -105,14 +105,14 @@ Route::get('/panel/sell-edit', function () {
 });
 
 
-Route::get('/panel/users', function () {
-  return view('site.users.users');
-});
 
 
-Route::get('/panel/user', function () {
-  return view('site.users.user');
-});
+
+
+
+Route::get('/panel/users', 'admin\AdminUserController@users');
+Route::get('/panel/user/{id}', 'admin\AdminUserController@user');
+Route::post('/panel/users/send-genreal-message', 'admin\AdminUserController@sendMessage');
 
 Route::get('/panel/comments', function () {
   return view('site.comments.comments');

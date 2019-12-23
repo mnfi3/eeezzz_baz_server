@@ -9,7 +9,7 @@ class Ticket extends Model
 {
     use SoftDeletes;
 
-  protected $fillable = ['user_id', 'is_user_sent', 'text', 'is_seen'];
+  protected $fillable = ['sender_id', 'user_id', 'is_user_sent', 'text', 'is_seen'];
 
   public function user(){
       return $this->belongsTo('App\User');

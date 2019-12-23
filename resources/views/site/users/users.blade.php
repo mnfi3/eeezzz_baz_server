@@ -28,7 +28,7 @@
                             <i class="fa fa-envelope-open "></i>
                             ارسال پیام کوتاه به همه کاربران
                         </h3>
-                        <form role="form" onsubmit="return confirm('آیا مطمئن هستید؟')">
+                        <form role="form" method="post" action="{{url('/panel/users/send-genreal-message')}}"  onsubmit="return confirm('آیا مطمئن هستید؟')">
                             {{csrf_field()}}
                             <div class="form-body my-2">
                                 <div class="form-group">
@@ -36,10 +36,39 @@
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                        <textarea style="min-height: 170px" type="text" name="name" class="form-control" value="" placeholder="(لطفا در نوشتن پیام دقت کافی داشته باشید)"></textarea>
+                                        <textarea style="min-height: 170px" type="text" name="text" class="form-control" value="" required placeholder="(لطفا در نوشتن پیام دقت کافی داشته باشید)"></textarea>
                                     </div>
                                 </div>
                             </div>
+
+
+
+                            <div class="form-group  ">
+                                <label for="price">ارسال از طریق:</label>
+                                <div class="d-inline">
+                                    <span class="custom-control m-5" style="">
+                                        <input type="checkbox" class="custom-control-input"
+                                               id="defaultUnchecked" name="ticket" value="ticket">
+                                        <label class="custom-control-label text-dark set-font"
+                                               for="defaultUnchecked">تیکت</label>
+                                    </span>
+                                    <span class="custom-control m-5" style="">
+                                        <input type="checkbox" class="custom-control-input"
+                                               id="defaultUnchecked" name="sms" value="sms">
+                                        <label class="custom-control-label text-dark set-font"
+                                               for="defaultUnchecked">sms</label>
+                                    </span>
+                                    <span class="custom-control m-5" style="">
+                                        <input type="checkbox" class="custom-control-input"
+                                               id="defaultUnchecked" name="email" value="email">
+                                        <label class="custom-control-label text-dark set-font"
+                                               for="defaultUnchecked">ایمیل</label>
+                                    </span>
+                                </div>
+                            </div>
+
+
+
                             <div class="form-actions">
                                 <button type="submit" name="submit" class="btn btn-info btn-round">
                                     <i class="fa fa-search"></i>
@@ -87,25 +116,49 @@
                                 <thead>
                                 <tr>
                                     <th>ردیف</th>
+                                    <th>تیکت</th>
+                                    <th>sms</th>
+                                    <th>ایمیل</th>
                                     <th>تاریخ </th>
                                     <th>محتوای پیام</th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                @php($i=0)
+                                @foreach($messages as $message)
                                 <tr>
-                                    <td>1</td>
-                                    {{--<td><img src="{{$currency->filename}}" height="35" class="rounded float-right" alt="{{$currency->name}}"></td>--}}
+                                    <td>{{++$i}}</td>
                                     <td>
-                                        1398/09/20 ، 19:20:36
+                                        @if($message->ticket == 1) بله
+                                        @else خیر
+                                        @endif
                                     </td>
-                                    <td><button class="custom-btn text-center" style="max-width: 150px" data-toggle="modal" data-target="#myModal2">مشاهده</button></td>
+                                    <td>
+                                        @if($message->sms == 1) بله
+                                        @else خیر
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($message->email == 1) بله
+                                        @else خیر
+                                        @endif
+                                    </td>
+
+                                    @php($date = new \App\Http\Controllers\helpers\PDate())
+                                    @php($d = explode(' ', $message->created_at)[0])
+                                    @php($time = explode(' ', $message->created_at)[1])
+                                    <td class="text-black" > {{$date->toPersian($d, 'Y/m/d')}} <br> {{$time}}  </td>
+                                    <td>
+                                        {{$message->text}}
+                                    </td>
 
                                 </tr>
+                                 @endforeach
                                 </tbody>
                             </table>
                         </div><!-- /.table-responsive -->
                         <div class="pull-left">
-                            {{--{{ $currencyList->links() }}--}}
+                            {{ $messages->links() }}
                         </div>
                         <div class="clearfix"></div>
                     </div><!-- /.portlet-body -->
@@ -175,53 +228,46 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                @php($i=0)
+                                @foreach($users as $user)
                                 <tr>
-                                    <td>1</td>
+                                    <td>{{++$i}}</td>
                                     {{--<td><img src="{{$currency->filename}}" height="35" class="rounded float-right" alt="{{$currency->name}}"></td>--}}
-                                    <td class="text-black" >Ali Aseman 68</td>
+                                    <td class="text-black" >{{$user->full_name}}</td>
                                     <td>
-                                        aliarabgary@gmail.com
+                                        {{$user->email}}
                                     </td>
+                                    @if($user->created_at != null)
+                                    @php($date = new \App\Http\Controllers\helpers\PDate())
+                                    @php($d = explode(' ', $user->created_at)[0])
+                                    @php($time = explode(' ', $user->created_at)[1])
+                                    <td class="text-black" > {{$date->toPersian($d, 'Y/m/d')}} <br> {{$time}}  </td>
+                                    @else
+                                    <td> </td>
+                                    @endif
+
                                     <td>
-                                        1398/09/28
-                                    </td>
-                                    <td>
-                                        1,400,000
+                                        @if($user->finance != null)
+                                            {{number_format($user->finance->user_balance)}} تومان
+                                        @else
+                                        0 تومان
+                                        @endif
                                     </td>
 
                                     <td>
-                                        <a class="btn btn-sm del-edit "  href="{{url('/user')}}">
+                                        <a class="btn btn-sm del-edit "  href="{{url('/panel/user', $user->id)}}">
                                             جزییات
                                         </a>
                                     </td>
 
                                 </tr>
-                                <tr>
-                                    <td>1</td>
-                                    {{--<td><img src="{{$currency->filename}}" height="35" class="rounded float-right" alt="{{$currency->name}}"></td>--}}
-                                    <td class="text-black" >Ali Aseman 68</td>
-                                    <td>
-                                        aliarabgary@gmail.com
-                                    </td>
-                                    <td>
-                                        1398/09/28
-                                    </td>
-                                    <td>
-                                        1,400,000
-                                    </td>
+                                @endforeach
 
-                                    <td>
-                                        <a class="btn btn-sm del-edit "  href="{{url('/user')}}">
-                                            جزییات
-                                        </a>
-                                    </td>
-
-                                </tr>
                                 </tbody>
                             </table>
                         </div><!-- /.table-responsive -->
                         <div class="pull-left">
-                            {{--{{ $currencyList->links() }}--}}
+                            {{ $users->links() }}
                         </div>
                         <div class="clearfix"></div>
                     </div><!-- /.portlet-body -->

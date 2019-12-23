@@ -84,7 +84,7 @@ class AdminProductController extends Controller
     $game->description = $request->description;
     $game->save();
 
-    DB::delete("delete  from genre_game where game_info_id=?", [$game->id]);
+    DB::delete("delete from genre_game where game_info_id=?", [$game->id]);
     $genres = $request->genres;
     foreach ($genres as $genre) {
       DB::insert("insert into genre_game (game_info_id, genre_id) values (?,?)", [$game->id, $genre]);
