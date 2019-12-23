@@ -15,6 +15,8 @@ class SettlementRequest extends Model
     'user_id', 'bank_card_number', 'bank_account_number', 'bank_shba_number', 'bank_account_owner_name', 'is_seen', 'is_confirmed', 'is_paid'
   ];
 
+  protected $hidden = ['is_seen', 'is_confirmed', 'is_paid'];
+
 
   public function payment(){
     return $this->morphOne('App\SitePaymet', 'paymentable');

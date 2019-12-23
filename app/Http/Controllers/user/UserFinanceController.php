@@ -201,4 +201,15 @@ class UserFinanceController extends Controller {
 
     return ws::r(1, '', Response::HTTP_OK, ms::SETTLEMENT_REQUEST_SUCCESS);
   }
+
+
+  public function lastSettlement(){
+    $user = Auth::user();
+    $settlement = $user->settlements()->orderBy('id', 'desc')->first();
+    if ($settlement != null){
+      return ws::r(1, $settlement, Response::HTTP_OK);
+    }else{
+      return ws::r(0, '', Response::HTTP_OK, ms::SETTLEMENT_NOT_EXIST);
+    }
+  }
 }

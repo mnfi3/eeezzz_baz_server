@@ -60,6 +60,7 @@ class ms {
   const SETTLEMENT_MIN_AMOUNT = 'اعتبار شما برای تسویه حساب کافی نیست';
   const SETTLEMENT_REQUEST_SUCCESS = 'درخواست تسویه حساب شما با موفقیت ثبت شد';
   const SETTLEMENT_REQUEST_DUPLICATE = 'شما قبلا درخواست تسویه حساب داده اید.لطفا شکیبا باشید تا درخواست شما بررسی شود';
+  const SETTLEMENT_NOT_EXIST = 'هیچ درخواست تسویه ای وجود ندارد';
 
 
   //product

@@ -15,6 +15,7 @@ Route::get('user-photo', 'site_public\PhotoController@userPhoto');
 
 //settlement request
 Route::post('settlement-request', 'user\UserFinanceController@settlementRequest');
+Route::get('last-settlement', 'user\UserFinanceController@lastSettlement');
 
 
 //MAIN API
