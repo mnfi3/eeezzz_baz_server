@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\helpers;
+
 use App\Http\Controllers\Controller;
 
 
-class SystemHelper extends Controller
-{
+class SystemHelper extends Controller {
   public static function generateRandomString($length = 6) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -15,6 +15,9 @@ class SystemHelper extends Controller
     }
     return $randomString;
   }
+
+
+
 
 
 }

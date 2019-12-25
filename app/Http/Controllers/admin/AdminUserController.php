@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\GeneralMessages;
 use App\Http\Controllers\helpers\AdminHelper;
+use App\SmsPrivate;
 use App\Ticket;
 use App\User;
 use Illuminate\Http\Request;
@@ -28,6 +29,43 @@ class AdminUserController extends Controller
   public function user($id){
     $user = User::find($id);
     return view('site.users.user', compact('user'));
+  }
+
+  public function userSearch(Request $request){
+    $text = $request->text;
+    $users = User::where('full_name', 'like', '%'.$text.'%')
+      ->orWhere('email', 'like', '%'.$text.'%')
+      ->orWhere('mobile', 'like', '%'.$text.'%')->paginate(30);
+    $messages = GeneralMessages::orderBy('id', 'desc')->paginate(20);
+    return view('site.users.users', compact('messages', 'users'))->with('text', $text);
+  }
+
+
+
+  public function sendTicket(Request $request){
+    $user_id = $request->user_id;
+    DB::update("update tickets set is_seen=? where user_id=? and is_user_sent=?", [1, $user_id, 1]);
+    $ticekt = Ticket::create([
+      'sender_id' => Auth::user()->id,
+      'user_id' => $user_id,
+      'is_user_sent' => 0,
+      'text' => $request->text,
+      'is_seen' => 0
+    ]);
+
+    return back();
+  }
+
+
+  public function sendSms(Request $request){
+    $user = User::find($request->user_id);
+    Smsirlaravel::send([$request->text], [$user->mobile]);
+    SmsPrivate::create([
+      'sender_id' => Auth::user()->id,
+      'user_id' => $user->id,
+      'text' => $request->text
+    ]);
+    return back();
   }
 
   public function sendMessage(Request $request){

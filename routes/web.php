@@ -112,7 +112,10 @@ Route::get('/panel/sell-edit', function () {
 
 Route::get('/panel/users', 'admin\AdminUserController@users');
 Route::get('/panel/user/{id}', 'admin\AdminUserController@user');
+Route::post('/panel/user-search', 'admin\AdminUserController@userSearch');
 Route::post('/panel/users/send-genreal-message', 'admin\AdminUserController@sendMessage');
+Route::post('/panel/users/send-ticket', 'admin\AdminUserController@sendTicket');
+Route::post('/panel/users/send-sms', 'admin\AdminUserController@sendSms');
 
 Route::get('/panel/comments', function () {
   return view('site.comments.comments');

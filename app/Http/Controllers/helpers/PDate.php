@@ -1,15 +1,30 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Mohsen
- * Date: 12/23/2019
- * Time: 3:04 PM
- */
+
 
 namespace App\Http\Controllers\helpers;
 
 
 class PDate {
+
+
+
+  public static function persianTime($dateTime, $text=false) {
+    $date = new PDate();
+    $d = explode(' ', $dateTime)[0];
+    $time = explode(' ', $dateTime)[1];
+    $result = ['date' => $date->toPersian($d, 'Y/m/d'), 'time' => $time];
+
+    if ($text) return $time . '--' . $date->toPersian($d, 'Y/m/d') ;
+    else return $result;
+  }
+
+
+
+
+
+
+
+
   var $persian_month_names=array(
     '01'=>'&#1601;&#1585;&#1608;&#1585;&#1583;&#1740;&#1606;',
     '02'=>'&#1575;&#1585;&#1583;&#1740;&#1576;&#1607;&#1588;&#1578;',
@@ -189,6 +204,9 @@ class PDate {
     $day[d]=bcdiv(bcdiv(bcdiv($sec-time(),60),60),24);
     return $day;
   }
+
+
+
 
 
 }
