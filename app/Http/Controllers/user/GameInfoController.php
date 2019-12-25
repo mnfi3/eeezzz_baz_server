@@ -4,16 +4,9 @@ namespace App\Http\Controllers\user;
 use App\GameInfo;
 use App\Http\Controllers\Controller;
 
-use App\Address;
-use App\Http\Controllers\helpers\AdminHelper;
-use App\Http\Controllers\helpers\UserHelper;
 use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
-use App\Post;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class GameInfoController extends Controller
 {
@@ -26,7 +19,7 @@ class GameInfoController extends Controller
 
   public function comments($id){
     $game = GameInfo::find($id);
-    $comments = $game->comments()->where('is_confirmed', '=', 1)->orderBy('created_at', 'desc')->paginate(12);
+    $comments = $game->comments()->where('is_checked', '=', 1)->where('is_confirmed', '=', 1)->orderBy('created_at', 'desc')->paginate(12);
     foreach ($comments as $comment){
       $comment->user;
     }

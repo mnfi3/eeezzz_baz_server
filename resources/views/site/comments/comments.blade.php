@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 
@@ -8,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="پنل مدیریت">
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('/images/favicon.png') }}">
 
@@ -19,21 +18,26 @@
 @include('include.nav-bar')
 <div id="page-content">
     <div class="row">
-        <div class="col-md-12">
-            <div class="portlet box border shadow round">
+        <div class="col-md-12 ">
+
+            {{--new comments--}}
+            <div class="portlet box border shadow round ">
                 <div class="portlet-heading">
                     <div class="portlet-title">
                         <h3 class="title">
                             <i class="fa fa-comment"></i>
-                            لیست کامنت ها
+                               لیست نظرات جدید
+                             <span class="new-order">نظرات جدید </span>
                         </h3>
                     </div>
                     <div class="buttons-box">
 
-                        <a class="btn btn-sm btn-default btn-round btn-fullscreen" rel="tooltip" title="تمام صفحه" href="#">
+                        <a class="btn btn-sm btn-default btn-round btn-fullscreen" rel="tooltip" title="تمام صفحه"
+                           href="#">
                             <i class="icon-size-fullscreen"></i>
                         </a>
-                        <a class="btn btn-sm btn-default btn-round btn-collapse" rel="tooltip" title="کوچک کردن" href="#">
+                        <a class="btn btn-sm btn-default btn-round btn-collapse" rel="tooltip" title="کوچک کردن"
+                           href="#">
                             <i class="icon-arrow-up"></i>
                         </a>
 
@@ -51,62 +55,191 @@
                                     <th>نام کاربر</th>
                                     <th>نام بازی</th>
                                     <th>متن پیام</th>
-                                    <th>وضعیت</th>
+                                    <th>تایید</th>
+                                    <th>رد</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td> 1 <span class="new-order">کامنت جدید </span></td>
-                                    <td class="text-black">
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>AliMan68  </h6> </a>
-                                    </td>
-                                    <td class="text-black" >
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>Red Dead Redemption2  </h6> </a>
-                                    </td>
-                                    <td><button class="custom-btn text-center" style="max-width: 150px" data-toggle="modal" data-target="#myModal">مشاهده</button></td>
-                                    <td>
-                                        <p class="btn btn-sm del-btn "  href="#">
-                                            تایید شده
-                                        </p>
-                                    </td>
+                                @php($i=0)
+                                @foreach($new_comments as $comment)
+                                    <tr>
+                                        <td> {{++$i}} </td>
+                                        <td class="text-black">
+                                            <a href="#" class="bg-success p-2 table-link" style="">
+                                                <h6>{{$comment->user->full_name}}</h6></a>
+                                        </td>
+                                        <td class="text-black">
+                                            @if($comment->commentable_type == 'App\GameInfo')
+                                                <a href="#" class="bg-success p-2 table-link" style="">
+                                                    <h6>{{$comment->gameInfo->name}}</h6></a>
+                                            @elseif($comment->commentable_type == 'App\Post')
+                                                <a href="#" class="bg-success p-2 table-link" style="">
+                                                    <h6>{{$comment->post->title}}</h6></a>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <button class="custom-btn text-center" style="max-width: 150px"
+                                                    data-toggle="modal" data-target="#myModal{{$comment->id}}">مشاهده
+                                            </button>
+                                        </td>
+                                        <td><a class="btn btn-success" href="{{url('/panel/comment/confirm', $comment->id)}}">تایید</a></td>
+                                        <td><a class="btn btn-danger" href="{{url('/panel/comment/reject', $comment->id)}}">رد</a></td>
 
-                                </tr>
-                                <tr>
-                                    <td> 2</td>
-                                    <td class="text-black">
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>Mohsen3  </h6> </a>
-                                    </td>
-                                    <td class="text-black" >
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>GTA VI  </h6> </a>
-                                    </td>
-                                    <td><button class="custom-btn text-center" style="max-width: 150px" data-toggle="modal" data-target="#myModal">مشاهده</button></td>
-                                    <td>
-                                        <p class="btn btn-sm del-btn btn-danger"  href="#">
-                                             رد شده
-                                        </p>
-                                    </td>
 
-                                </tr>
-                                <tr>
-                                    <td> 3 <span class="new-order">کامن جدید </span></td>
-                                    <td class="text-black">
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>Pouya Akn4  </h6> </a>
-                                    </td>
-                                    <td class="text-black" >
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>Asphalt6</h6> </a>
-                                    </td>
-                                    <td><button class="custom-btn text-center" style="max-width: 150px" data-toggle="modal" data-target="#myModal">مشاهده</button></td>
-                                    <td>
-                                        <p class="btn btn-sm del-btn "  href="#">
-                                            تایید شده
-                                        </p>
-                                    </td>
+                                    </tr>
+                                @endforeach
 
-                                </tr>
                             </table>
                         </div><!-- /.table-responsive -->
                         <div class="pull-left">
-                            {{--{{ $currencyList->links() }}--}}
+                            {{ $new_comments->links() }}
+                        </div>
+                        <div class="clearfix"></div>
+                    </div><!-- /.portlet-body -->
+                </div><!-- /.portlet -->
+            </div><!-- /.col-md-12 -->
+
+            {{--rejected comments--}}
+            <div class="portlet box border shadow round ">
+                <div class="portlet-heading">
+                    <div class="portlet-title">
+                        <h3 class="title">
+                            <i class="fa fa-comment"></i>
+                            لیست نظرات رد شده
+                        </h3>
+                    </div>
+                    <div class="buttons-box">
+
+                        <a class="btn btn-sm btn-default btn-round btn-fullscreen" rel="tooltip" title="تمام صفحه"
+                           href="#">
+                            <i class="icon-size-fullscreen"></i>
+                        </a>
+                        <a class="btn btn-sm btn-default btn-round btn-collapse" rel="tooltip" title="کوچک کردن"
+                           href="#">
+                            <i class="icon-arrow-up"></i>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="portlet-body">
+                        <div class="pull-left">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped" id="data-table">
+                                <thead>
+                                <tr style="font-size: 1.2rem">
+                                    <th>ردیف</th>
+                                    <th>نام کاربر</th>
+                                    <th>نام بازی</th>
+                                    <th>متن پیام</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @php($i=0)
+                                @foreach($rejected_comments as $comment)
+                                    <tr>
+                                        <td> {{++$i}}</td>
+                                        <td class="text-black">
+                                            <a href="#" class="bg-success p-2 table-link" style="">
+                                                <h6>{{$comment->user->full_name}}</h6></a>
+                                        </td>
+                                        <td class="text-black">
+                                            @if($comment->commentable_type == 'App\GameInfo')
+                                                <a href="#" class="bg-success p-2 table-link" style="">
+                                                    <h6>{{$comment->gameInfo->name}}</h6></a>
+                                            @elseif($comment->commentable_type == 'App\Post')
+                                                <a href="#" class="bg-success p-2 table-link" style="">
+                                                    <h6>{{$comment->post->title}}</h6></a>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <button class="custom-btn text-center" style="max-width: 150px"
+                                                    data-toggle="modal" data-target="#myModal{{$comment->id}}">مشاهده
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                            </table>
+                        </div><!-- /.table-responsive -->
+                        <div class="pull-left">
+                            {{ $rejected_comments->links() }}
+                        </div>
+                        <div class="clearfix"></div>
+                    </div><!-- /.portlet-body -->
+                </div><!-- /.portlet -->
+            </div><!-- /.col-md-12 -->
+
+
+            {{--confirmed comments--}}
+            <div class="portlet box border shadow round ">
+                <div class="portlet-heading">
+                    <div class="portlet-title">
+                        <h3 class="title">
+                            <i class="fa fa-comment"></i>
+                            لیست نظرات تایید شده
+                        </h3>
+                    </div>
+                    <div class="buttons-box">
+
+                        <a class="btn btn-sm btn-default btn-round btn-fullscreen" rel="tooltip" title="تمام صفحه"
+                           href="#">
+                            <i class="icon-size-fullscreen"></i>
+                        </a>
+                        <a class="btn btn-sm btn-default btn-round btn-collapse" rel="tooltip" title="کوچک کردن"
+                           href="#">
+                            <i class="icon-arrow-up"></i>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="portlet-body">
+                        <div class="pull-left">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped" id="data-table">
+                                <thead>
+                                <tr style="font-size: 1.2rem">
+                                    <th>ردیف</th>
+                                    <th>نام کاربر</th>
+                                    <th>نام بازی</th>
+                                    <th>متن پیام</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @php($i=0)
+                                @foreach($confirmed_comments as $comment)
+                                    <tr>
+                                        <td> {{++$i}} </td>
+                                        <td class="text-black">
+                                            <a href="#" class="bg-success p-2 table-link" style="">
+                                                <h6>{{$comment->user->full_name}}</h6></a>
+                                        </td>
+                                        <td class="text-black">
+                                            @if($comment->commentable_type == 'App\GameInfo')
+                                                <a href="#" class="bg-success p-2 table-link" style="">
+                                                    <h6>{{$comment->gameInfo->name}}</h6></a>
+                                            @elseif($comment->commentable_type == 'App\Post')
+                                                <a href="#" class="bg-success p-2 table-link" style="">
+                                                    <h6>{{$comment->post->title}}</h6></a>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <button class="custom-btn text-center" style="max-width: 150px"
+                                                    data-toggle="modal" data-target="#myModal{{$comment->id}}">مشاهده
+                                            </button>
+                                        </td>
+
+
+                                    </tr>
+                                @endforeach
+
+                            </table>
+                        </div><!-- /.table-responsive -->
+                        <div class="pull-left">
+                            {{ $confirmed_comments->links() }}
                         </div>
                         <div class="clearfix"></div>
                     </div><!-- /.portlet-body -->
@@ -124,7 +257,8 @@
 </div>
 
 </div>
-<div class="modal fade" id="myModal" style="font-family: Vazir">
+@foreach($new_comments as $comment)
+<div class="modal fade" id="myModal{{$comment->id}}" style="font-family: Vazir">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -136,53 +270,74 @@
 
             <!-- Modal body -->
             <div class="modal-body text-right">
-                <p> لورم ایپسوم یا طرح‌نما (به انگلیسی: Lorem ipsum) به متنی آزمایشی و بی‌معنی در صنعت چاپ، صفحه‌آرایی و طراحی گرافیک گفته می‌شود. طراح گرافیک از این متن به عنوان عنصری از ترکیب بندی برای پر کردن صفحه و ارایه اولیه شکل ظاهری و کلی طرح سفارش گرفته شده استفاده می نماید</p>
-                <div class="d-flex flex-row justify-content-center">
-                    <a class="btn btn-sm del-btn btn-danger p-2"  href="#" style="font-family:IranSans;">
-                        رد
-                    </a>
-                    <a class="btn btn-sm del-btn btn-success text-center p-2"  href="#" style="font-family:IranSans;">
-                        تایید
-                    </a>
+                <p>{{$comment->text}}</p>
+            </div>
 
+            <!-- Modal footer -->
+            <div class="modal-footer">
+
+                <button type="button" class="custom-btn btn-danger" data-dismiss="modal" style="max-width: 60px">بستن
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@endforeach
+@foreach($rejected_comments as $comment)
+    <div class="modal fade" id="myModal{{$comment->id}}" style="font-family: Vazir">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title text-right ml-auto"> جزئیات کامنت</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
+
+                <!-- Modal body -->
+                <div class="modal-body text-right">
+                    <p>{{$comment->text}}</p>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+
+                    <button type="button" class="custom-btn btn-danger" data-dismiss="modal" style="max-width: 60px">بستن
+                    </button>
+                </div>
+
             </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-
-                <button type="button" class="custom-btn btn-danger" data-dismiss="modal" style="max-width: 60px">بستن</button>
-            </div>
-
         </div>
     </div>
-</div>
-<div class="modal fade" id="myModal1" style="font-family: Vazir">
-    <div class="modal-dialog">
-        <div class="modal-content">
+@endforeach
+@foreach($confirmed_comments as $comment)
+    <div class="modal fade" id="myModal{{$comment->id}}" style="font-family: Vazir">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title text-right ml-auto">اطلاعات</h4>
-                <button type="button" class="close" data-dismiss="modal1">&times;</button>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title text-right ml-auto"> جزئیات کامنت</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body text-right">
+                    <p>{{$comment->text}}</p>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+
+                    <button type="button" class="custom-btn btn-danger" data-dismiss="modal" style="max-width: 60px">بستن
+                    </button>
+                </div>
+
             </div>
-
-            <!-- Modal body -->
-            <div class="modal-body text-right">
-                <p> شماره پرداخت : 12345678</p>
-                <p> مبلغ :593000</p>
-                <p> تاریخ :1397/03/09</p>
-                <p>زمان :13:50:20 </p>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="custom-btn btn-danger" data-dismiss="modal" style="max-width: 60px">بستن</button>
-            </div>
-
         </div>
     </div>
-</div>
+@endforeach
 
 </body>
 

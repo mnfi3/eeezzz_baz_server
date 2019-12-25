@@ -109,7 +109,7 @@ Route::get('/panel/sell-edit', function () {
 
 
 
-
+//users
 Route::get('/panel/users', 'admin\AdminUserController@users');
 Route::get('/panel/user/{id}', 'admin\AdminUserController@user');
 Route::post('/panel/user-search', 'admin\AdminUserController@userSearch');
@@ -117,9 +117,10 @@ Route::post('/panel/users/send-genreal-message', 'admin\AdminUserController@send
 Route::post('/panel/users/send-ticket', 'admin\AdminUserController@sendTicket');
 Route::post('/panel/users/send-sms', 'admin\AdminUserController@sendSms');
 
-Route::get('/panel/comments', function () {
-  return view('site.comments.comments');
-});
+//comments
+Route::get('/panel/comments', 'admin\AdminCommentController@comments');
+Route::get('/panel/comment/confirm/{id}', 'admin\AdminCommentController@commentConfirm');
+Route::get('/panel/comment/reject/{id}', 'admin\AdminCommentController@commentReject');
 
 Route::get('/panel/tickets', function () {
   return view('site.ticket.tickets');
