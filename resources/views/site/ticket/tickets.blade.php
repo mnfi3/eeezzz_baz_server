@@ -68,86 +68,13 @@
                         <div class=" col-md-3" style="max-height: 450px;overflow-y: auto;overflow-x: hidden">
                             <h2>لیست تیکت ها</h2>
                             <ul>
-                                <li class="p-3 text-black"><a href="">Ali Arabgary</a> <span><span class="new-order2"> جدید </span></span></li>
-                                <li class="p-3 text-black"><a href="">Poya Akn</a> <span><span class="new-order2"> جدید </span></span></li>
-                                <li class="p-3 text-black"><a href="">mohsen3</a> </li>
-                                <li class="p-3 text-black"><a href="">Ali Arabgary</a> <span><span class="new-order2"> جدید </span></span></li>
-                                <li class="p-3 text-black"><a href="">Poya Akn</a> <span><span class="new-order2"> جدید </span></span></li>
-                                <li class="p-3 text-black"><a href="">mohsen3</a> </li>
-                                <li class="p-3 text-black"><a href="">Ali Arabgary</a> <span><span class="new-order2"> جدید </span></span></li>
-                                <li class="p-3 text-black"><a href="">Poya Akn</a> <span><span class="new-order2"> جدید </span></span></li>
-                                <li class="p-3 text-black"><a href="">mohsen3</a> </li>
+                                @foreach($users as $user)
+                                    <li class="p-3 text-black" > <span class=" new-order2"> {{$user->new_tickets_count}}</span>  <a href="{{url('/panel/tickets/user', $user->id)}}">{{$user->full_name}}</a>  </li>
+                                @endforeach
                             </ul>
 
                         </div>
-                        <div class="col-md-9 row " style="width: 55%" >
-                            <div style="height: 450px;border-top-left-radius: 5px;border-top-right-radius: 5px;overflow-y: auto;overflow-x: hidden" class="col-12 bg-darkblue">
-                                <div class="row" style="">
-                                    <div class="text-white col-md-8 ml-auto" style="max-width: 65%;border-radius: 8px;margin: 15px;background-color: #0f74a8;"  >
-                                        <i class="fa fa-user" style=""></i><span> پشتیبان :</span>
-                                        <p class="p-5 " style="padding: 10px !important; font-size: 1.3rem;font-weight: 600">
-                                            تا اینکه کپا آریسابالاگا دروازه‌بان اسپانیایی چلسی در آخرین لحظات مسابقه با حرکتی عجیب، خطای بی‌موردی روی کاپیتان نروژ عمر العبدلاوی انجام داد که به پنالتی تبدیل شد و بازی را 1-1 مساوی کرد.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row" style="">
-                                    <div class="text-white col-md-8 mr-auto" style="max-width: 65%;border-radius: 8px;margin-right: 15px;background-color: #856404;"  >
-                                        <i class="fa fa-shopping-basket" style=""></i><span> رستوران :</span>
 
-                                        <p class="p-5" style="padding: 10px !important; font-size: 1.3rem;font-weight:600">
-                                            تا اینکه کپا آریسابالاگا دروازه‌بان اسپانیایی چلسی در آخرین لحظات مسابقه با حرکتی عجیب، خطای بی‌موردی روی کاپیتان نروژ عمر العبدلاوی انجام داد که به پنالتی تبدیل شد و بازی را 1-1 مساوی کرد.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row" style="">
-                                    <div class="text-white col-md-8 ml-auto" style="max-width: 65%;border-radius: 8px;margin: 15px;background-color: #0f74a8;"  >
-                                        <i class="fa fa-user" style=""></i><span> پشتیبان :</span>
-                                        <p class="p-5 " style="padding: 10px !important; font-size: 1.3rem;font-weight: 600">
-                                            تا اینکه کپا آریسابالاگا دروازه‌بان اسپانیایی چلسی در آخرین لحظات مسابقه با حرکتی عجیب، خطای بی‌موردی روی کاپیتان نروژ عمر العبدلاوی انجام داد که به پنالتی تبدیل شد و بازی را 1-1 مساوی کرد.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row" style="">
-                                    <div class="text-white col-md-8 mr-auto" style="max-width: 65%;border-radius: 8px;margin-right: 15px;background-color: #856404;"  >
-                                        <i class="fa fa-shopping-basket" style=""></i><span> رستوران :</span>
-
-                                        <p class="p-5" style="padding: 10px !important; font-size: 1.3rem;font-weight:600">
-                                            تا اینکه کپا آریسابالاگا دروازه‌بان اسپانیایی چلسی در آخرین لحظات مسابقه با حرکتی عجیب، خطای بی‌موردی روی کاپیتان نروژ عمر العبدلاوی انجام داد که به پنالتی تبدیل شد و بازی را 1-1 مساوی کرد.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row" style="">
-                                    <div class="text-white col-md-8 ml-auto" style="max-width: 65%;border-radius: 8px;margin: 15px;background-color: #0f74a8;"  >
-                                        <i class="fa fa-user" style=""></i><span> پشتیبان :</span>
-                                        <p class="p-5 " style="padding: 10px !important; font-size: 1.3rem;font-weight: 600">
-                                            تا اینکه کپا آریسابالاگا دروازه‌بان اسپانیایی چلسی در آخرین لحظات مسابقه با حرکتی عجیب، خطای بی‌موردی روی کاپیتان نروژ عمر العبدلاوی انجام داد که به پنالتی تبدیل شد و بازی را 1-1 مساوی کرد.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row" style="">
-                                    <div class="text-white col-md-8 mr-auto" style="max-width: 65%;border-radius: 8px;margin-right: 15px;background-color: #856404;"  >
-                                        <i class="fa fa-shopping-basket" style=""></i><span> رستوران :</span>
-
-                                        <p class="p-5" style="padding: 10px !important; font-size: 1.3rem;font-weight:600">
-                                            تا اینکه کپا آریسابالاگا دروازه‌بان اسپانیایی چلسی در آخرین لحظات مسابقه با حرکتی عجیب، خطای بی‌موردی روی کاپیتان نروژ عمر العبدلاوی انجام داد که به پنالتی تبدیل شد و بازی را 1-1 مساوی کرد.
-                                        </p>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style="width: 100%;height: 100px;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px" class="col-12 bg-warning">
-                                <div class="row form">
-                                    <div class="col-md-8 m-0">
-                                        <textarea name="" id="" style="width: 100%;height: 100px;border-radius: 5px;" placeholder="پیام خود را یادداشت کنید" class=""></textarea>
-                                    </div>
-                                    <div class="col-md-4 m-0">
-                                        <button  type="submit" style="width: 100%;height: 100px;  font-size: 2rem" class="text-center bg-purple text-white">ارسال</button>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
                     </div>
 
 

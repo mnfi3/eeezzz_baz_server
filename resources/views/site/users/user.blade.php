@@ -367,10 +367,10 @@
                                     @foreach($user->tickets as $ticket)
 
                                         @if($ticket->is_user_sent == 0)
-                                            <div class="row mb-5" style="">
+                                            <div class="row mb-5" style="margin: 10px">
                                                 <div class="text-white col-md-8 ml-auto"
                                                      style="max-width: 65%;border-radius: 8px;margin: 15px;background-color: #0f74a8;">
-                                                    <i class="fa fa-user" style=""></i><span> پشتیبان :</span>
+                                                    <i class="fa fa-user" style=""></i><span>پشتیبان :<br> {{$ticket->sender->full_name}}</span>
                                                     <p class="p-5 "
                                                        style="padding: 10px !important; font-size: 1.3rem;font-weight: 600">{{$ticket->text}}</p>
                                                     <span class="text-white ml-auto">{{\App\Http\Controllers\helpers\PDate::persianTime($ticket->created_at)['time']}}</span>
@@ -384,7 +384,7 @@
                                         @else
 
 
-                                            <div class="row mb-5 mt-5 " style="">
+                                            <div class="row mb-5 mt-5 " style="margin: 10px">
                                                 <div class="text-white col-md-8 mr-auto "
                                                      style="max-width: 65%;border-radius: 8px;margin-right: 40px;background-color: #154b24;">
                                                     <i class="fa fa-shopping-basket"
@@ -403,7 +403,6 @@
 
 
                                 </div>
-                                <button class="btn btn-warning m-5">پیام ها دیده شد</button>
                                 <div style="width: 100%;height: 100px;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px"
                                      class="bg-warning mt-5">
                                     <form class="row form" method="post" action="{{url('/panel/users/send-ticket')}}">

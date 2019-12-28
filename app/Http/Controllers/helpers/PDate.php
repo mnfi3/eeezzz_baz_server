@@ -9,6 +9,7 @@ class PDate {
 
 
   public static function persianTime($dateTime, $text=false) {
+    if (strlen($dateTime) < 4) return '';
     $date = new PDate();
     $d = explode(' ', $dateTime)[0];
     $time = explode(' ', $dateTime)[1];

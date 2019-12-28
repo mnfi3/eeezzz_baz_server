@@ -19,7 +19,7 @@ class CreatePostsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->integer('game_info_id')->unsigned();
             $table->string('title');
-            $table->text('content');
+            $table->text('content')->collation('utf8mb4_bin');
             $table->timestamps();
             $table->softDeletes();
             $table->charset = 'utf8';

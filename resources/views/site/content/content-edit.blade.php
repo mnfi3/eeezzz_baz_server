@@ -42,29 +42,23 @@
                         </div>
                         <div class="portlet-body">
                             <div class="portlet-body">
-                                <form role="form" action="InsertNewDCurrency" method="post" enctype="multipart/form-data">
+                                <form role="form" action="{{url('/panel/post/update')}}" method="post"
+                                      enctype="multipart/form-data">
                                     {{csrf_field()}}
+                                    <input type="hidden" name="id" value="{{$post->id}}">
                                     <div class="form-body">
 
                                         <div class="form-group">
-                                            <label>بازی</label>
+                                            <label>مرتبط با :</label>
                                             <div class="input-group round">
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                                <select class="form-control" name="status">
-                                                    <option value="1" >God of War 4</option>
-                                                    <option value="2">pes 2019 </option>
-                                                    <option value="3">fifa 20 </option>
-                                                    <option value="4">need for speed </option>
-                                                    <option value="5">uncharted </option>
-                                                    <option value="6">GTA V</option>
-                                                    <option value="1" >God of War 4</option>
-                                                    <option value="2">pes 2019 </option>
-                                                    <option value="3">fifa 20 </option>
-                                                    <option value="4">need for speed </option>
-                                                    <option value="5">uncharted </option>
-                                                    <option value="6">GTA V</option>
+                                                <select class="form-control" name="game_info_id">
+                                                    <option value="0">هیچکدام</option>
+                                                    @foreach($games as $game)
+                                                        <option value="{{$game->id}}" @if($post->game_info_id == $game->id) selected @endif>{{$game->name}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div><!-- /.input-group -->
                                         </div><!-- /.form-group -->
@@ -75,9 +69,26 @@
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                                <input type="text" name="name" class="form-control" value="" placeholder="نام انگلیسی وارد شود">
+                                                <input type="text" name="title" class="form-control" value="{{$post->title}}"
+                                                       placeholder=" عنوان وارد شود" required>
                                             </div>
                                         </div>
+
+
+                                        <div class="form-group relative">
+                                            <input type="file" name="image" class="form-control" >
+                                            <label> تصویر کاور</label>
+                                            <div class="input-group round">
+                                                <input type="text" class="form-control file-input"
+                                                       placeholder="برای آپلود کلیک کنید">
+                                                <span class="input-group-btn input-group-sm">
+                                                <button type="button" class="btn btn-info">
+                                                    <i class="icon-picture"></i>
+                                                    آپلود تصویر کاور
+                                                </button>
+                                            </span>
+                                            </div><!-- /.input-group -->
+                                        </div><!-- /.form-group -->
 
 
                                         <div class="form-group">
@@ -87,35 +98,20 @@
                                                     <i class="icon-info"></i>
                                                 </span>
                                                 <textarea type="text" id="editor2" required=""
-                                                          class="form-control" name="description" placeholder="set content here"></textarea>
+                                                          class="form-control" name="content"
+                                                          placeholder="set content here">{{$post->content}}</textarea>
                                                 <script>
-                                                  CKEDITOR.replace( 'editor2' );
-                                                </script>    </div>
+                                                  CKEDITOR.replace('editor2');
+                                                </script>
+                                            </div>
                                         </div>
-
-
-                                        <div class="form-group relative">
-                                            <input type="file" name="filename[]" class="form-control">
-                                            <label>  عکس اول</label>
-                                            <div class="input-group round">
-                                                <input type="text" class="form-control file-input" placeholder="برای آپلود کلیک کنید">
-                                                <span class="input-group-btn input-group-sm">
-                                                <button type="button" class="btn btn-info">
-                                                    <i class="icon-picture"></i>
-                                                    آپلود عکس اول
-                                                </button>
-                                            </span>
-                                            </div><!-- /.input-group -->
-                                        </div><!-- /.form-group -->
-
-
 
 
                                     </div>
 
                                     <div class="form-actions">
                                         <button type="submit" name="submit" class="btn btn-info btn-round">
-                                            <i class="fa fa-save"></i>
+                                            <i class="icon-check"></i>
                                             ذخیره
                                         </button>
                                     </div><!-- /.form-actions -->

@@ -122,17 +122,19 @@ Route::get('/panel/comments', 'admin\AdminCommentController@comments');
 Route::get('/panel/comment/confirm/{id}', 'admin\AdminCommentController@commentConfirm');
 Route::get('/panel/comment/reject/{id}', 'admin\AdminCommentController@commentReject');
 
-Route::get('/panel/tickets', function () {
-  return view('site.ticket.tickets');
-});
+//tickets
+Route::get('/panel/tickets', 'admin\AdminTicketController@tickets');
+Route::get('/panel/tickets/user/{id}', 'admin\AdminTicketController@userTickets');
+Route::post('/panel/ticket/send', 'admin\AdminTicketController@sendTicket');
 
-Route::get('/panel/content', function () {
-  return view('site.content.content');
-});
+//posts
+Route::get('/panel/posts', 'admin\AdminPostController@posts');
+Route::post('/panel/post/add', 'admin\AdminPostController@postAdd');
+Route::post('/panel/post/remove', 'admin\AdminPostController@postRemove');
+Route::get('/panel/post-edit/{id}', 'admin\AdminPostController@postEdit');
+Route::post('/panel/post/update', 'admin\AdminPostController@postUpdate');
 
-Route::get('/panel/content-edit', function () {
-  return view('site.content.content-edit');
-});
+
 
 Route::get('/panel/finance', function () {
   return view('site.finance.finance');
@@ -141,74 +143,6 @@ Route::get('/panel/finance', function () {
 Route::get('/panel/report', function () {
   return view('site.report.report');
 });
-
-
-
-
-
-//Route::get('/panel/manage-foods', function () {
-//    return view('site.manage-products.food');
-//});
-//
-//Route::get('/panel/manage-dessert', function () {
-//    return view('site.manage-products.dessert');
-//});
-//
-//Route::get('/panel/dessert-edit', function () {
-//    return view('site.manage-products.dessert-edit');
-//});
-//
-//Route::get('/panel/food-edit', function () {
-//    return view('site.manage-products.food-edit');
-//});
-//
-//Route::get('/panel/categories', function () {
-//    return view('site.manage-products.categories');
-//});
-//
-//Route::get('/panel/category-edit', function () {
-//  return view('site.manage-products.category-edit');
-//});
-
-//Reports
-
-//Route::get('/panel/today-report',function (){
-//  return view('site.report.today');
-//});
-//
-//Route::get('/panel/all-report',function (){
-//  return view('site.report.all');
-//});
-//
-////Discount Code
-//
-//Route::get('/panel/discount-code',function(){
-//  return view('site.manage-discount.discount-code');
-//});
-//
-//Route::get('/panel/discount-edit',function(){
-//  return view('site.manage-discount.edit');
-//});
-//
-////Profile
-//
-//Route::get('/panel/profile/image',function(){
-//  return view('site.profile.image');
-//});
-//
-//Route::get('/panel/profile/address',function(){
-//  return view('site.profile.address');
-//});
-//
-//Route::get('/panel/profile/password',function(){
-//  return view('site.profile.password');
-//});
-//
-//
-////SUPPORT
-//Route::get('/panel/support',function(){
-//  return view('site.support.support');
-//});
 
 
 

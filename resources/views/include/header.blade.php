@@ -69,7 +69,7 @@
                 </li>
 
                 <li class="">
-                    <a href="{{url("/panel/content")}}">
+                    <a href="{{url("/panel/posts")}}">
                         <i class="icon-book-open"></i>
                         <span>محتوا</span>
                     </a>

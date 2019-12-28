@@ -11,10 +11,10 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class Uploader {
 
-  const TYPE_POST = 'app_post_cover';
-  const TYPE_GAME_COVER = 'app_game_cover';
-  const TYPE_GAME_MAIN = 'app_game_main';
-  const TYPE_SlIDER = 'app_slider';
+  const TYPE_POST = 'post_cover';
+  const TYPE_GAME_COVER = 'game_cover';
+  const TYPE_GAME_MAIN = 'game_main';
+  const TYPE_SlIDER = 'slider';
 
   private const SIZE_APP_POST_COVER = 300;
   private const SIZE_APP_GAME_COVER = '200';
@@ -23,7 +23,7 @@ class Uploader {
 
 
   public static function saveImage($class_name, $id, $file, $option = []){
-    isset($option['type']) ? $type = $option['type'] : $type = null;
+    isset($option['type']) ? $type = $option['type'] : $type = '';
 
     date_default_timezone_set('Asia/Tehran');
     $year_dir = date('Y', time());
@@ -42,7 +42,7 @@ class Uploader {
       'imageable_type' => $class_name,
       'path' => $orignal_path,
       'url' => $url,
-      'type' => 'original',
+      'type' => $type,
       'width' => 0,
       'height' => 0,
     ]);
@@ -62,7 +62,7 @@ class Uploader {
     }
 
 
-    if ($type == null) return $image;
+    if ($type == '') return $image;
 
     $image = Image::make($orignal_path);
     $w = $image->getWidth();
@@ -80,7 +80,7 @@ class Uploader {
       'imageable_type' => $class_name,
       'path' => $orignal_path,
       'url' => $url,
-      'type' => $type,
+      'type' => 'app_' . $type,
       'width' => 0,
       'height' => 0,
     ]);

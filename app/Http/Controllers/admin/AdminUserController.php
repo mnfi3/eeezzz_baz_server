@@ -44,7 +44,7 @@ class AdminUserController extends Controller
 
   public function sendTicket(Request $request){
     $user_id = $request->user_id;
-    DB::update("update tickets set is_seen=? where user_id=? and is_user_sent=?", [1, $user_id, 1]);
+    DB::update("update tickets set is_seen=1 where user_id=? and is_user_sent=1", [$user_id]);
     $ticekt = Ticket::create([
       'sender_id' => Auth::user()->id,
       'user_id' => $user_id,
