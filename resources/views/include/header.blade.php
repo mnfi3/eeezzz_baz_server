@@ -18,32 +18,40 @@
                         <span class="new-order2"> جدید </span>
                     </a>
                 </li>
-                <li class="">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="icon-basket"></i>
-                        <span>مدیریت محصولات</span>
+
+                <li>
+                    <a href="{{url("/panel/manage-games")}}" class="">
+                        <i class="fa fa-gamepad"></i>
+                        <span>مدیریت اطلاعات بازی ها</span>
                     </a>
-                    <ul>
-                        <li>
-                            <a href="{{url("/panel/manage-games")}}" class="">
-                                <i class="fa fa-gamepad"></i>
-                                <span>مدیریت بازی ها</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{url("/panel/rents")}}" class="">
-                                <i class="fa fa-renren"></i>
-                                <span>مدیریت اجاره ای ها</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{url("/panel/sells")}}" class="">
-                                <i class="fa fa-shopping-basket"></i>
-                                <span>مدیریت فروشی ها</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
+                <li>
+                    <a href="{{url("/panel/manage/products/games")}}" class="">
+                        <i class="fa fa-plus"></i>
+                        <span>مدیریت بازی های فروشگاه</span>
+                    </a>
+                </li>
+                {{--<li class="">--}}
+                    {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown">--}}
+                        {{--<i class="icon-basket"></i>--}}
+                        {{--<span>مدیریت محصولات</span>--}}
+                    {{--</a>--}}
+                    {{--<ul>--}}
+                       {{----}}
+                        {{--<li>--}}
+                            {{--<a href="{{url("/panel/rents")}}" class="">--}}
+                                {{--<i class="fa fa-renren"></i>--}}
+                                {{--<span>مدیریت اجاره ای ها</span>--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
+                        {{--<li>--}}
+                            {{--<a href="{{url("/panel/sells")}}" class="">--}}
+                                {{--<i class="fa fa-shopping-basket"></i>--}}
+                                {{--<span>مدیریت فروشی ها</span>--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
+                    {{--</ul>--}}
+                {{--</li>--}}
 
                 <li class="">
                     <a href="{{url("/panel/users")}}"  data-toggle="">

@@ -59,11 +59,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/test', function () {
-  $game = \App\GameInfo::find(26);
-  $game->genres;
-  $game->photos;
-  $game->videos;
-  return json_encode($game, JSON_UNESCAPED_UNICODE);
+  $game = \App\GameForShop::find(1);
+  $game->gameForRent;
+  $game->address;
+  return $game;
 });
 
 
@@ -80,29 +79,31 @@ Route::get('/panel/latest-orders-rents', 'admin\AdminOrderController@latestOrder
 Route::get('/panel/latest-orders-sell', 'admin\AdminOrderController@latestOrdersSells');
 
 
-//Manage Products
+//Manage Products (games)
 Route::get('/panel/manage-games', 'admin\AdminProductController@games');
 Route::post('/panel/game-add', 'admin\AdminProductController@gameAdd');
 Route::post('/panel/game-remove', 'admin\AdminProductController@gameRemove');
 Route::get('/panel/game-edit/{id}', 'admin\AdminProductController@gameEdit');
 Route::post('/panel/game-update', 'admin\AdminProductController@gameUpdate');
 
-Route::get('/panel/rents', function () {
-  return view('site.manage-products.rent');
-});
+Route::get('/panel/manage/products/games', 'admin\AdminProductController@productGames');
+
+//Route::get('/panel/rents', function () {
+//  return view('site.manage-products.rent');
+//});
 
 Route::get('/panel/rent-edit', function () {
   return view('site.manage-products.rent-edit');
 });
 
 
-Route::get('/panel/sells', function () {
-  return view('site.manage-products.sell');
-});
+//Route::get('/panel/sells', function () {
+//  return view('site.manage-products.sell');
+//});
 
-Route::get('/panel/sell-edit', function () {
-  return view('site.manage-products.sell-edit');
-});
+//Route::get('/panel/sell-edit', function () {
+//  return view('site.manage-products.sell-edit');
+//});
 
 
 
@@ -126,6 +127,7 @@ Route::get('/panel/comment/reject/{id}', 'admin\AdminCommentController@commentRe
 Route::get('/panel/tickets', 'admin\AdminTicketController@tickets');
 Route::get('/panel/tickets/user/{id}', 'admin\AdminTicketController@userTickets');
 Route::post('/panel/ticket/send', 'admin\AdminTicketController@sendTicket');
+Route::post('/panel/tickets/search', 'admin\AdminTicketController@search');
 
 //posts
 Route::get('/panel/posts', 'admin\AdminPostController@posts');

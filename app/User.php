@@ -103,6 +103,10 @@ class User extends Authenticatable
     return $this->hasMany('App\SmsPrivate');
   }
 
+  public function storeInfo(){
+    return $this->hasOne('App\StoreInfo');
+  }
+
 
 
 }

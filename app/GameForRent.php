@@ -11,7 +11,7 @@ class GameForRent extends Model
   use SoftDeletes;
 
 
-  protected $fillable = ['user_id', 'game_info_id', 'game_price', 'is_pending', 'city_id', 'region', 'count'];
+  protected $fillable = ['user_id', 'game_info_id', 'game_price', 'city_id', 'region', 'count', 'is_second_hand'];
 
 
   public function user(){
@@ -22,9 +22,6 @@ class GameForRent extends Model
     return $this->belongsTo('App\GameInfo', 'game_info_id');
   }
 
-//  public function rentType(){
-//    return $this->belongsTo('App\RentType');
-//  }
 
   public function address(){
     return $this->belongsTo('App\Address');
@@ -36,5 +33,10 @@ class GameForRent extends Model
 
   public function reports(){
     return $this->morphMany('App\Report','reportable');
+  }
+
+
+  public function gameForShop(){
+    return $this->belongsToMany('App\GameForShop', 'rent_shops');
   }
 }

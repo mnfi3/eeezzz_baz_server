@@ -58,4 +58,15 @@ class AdminTicketController extends Controller
   }
 
 
+  public function search(Request $request){
+    $users = User::where('full_name', 'like', '%'.$request->text.'%')
+      ->orWhere('email', 'like', '%'.$request->text.'%')
+      ->orWhere('mobile', 'like', '%'.$request->text.'%')->get();
+    foreach ($users as $user){
+      $user->new_tickets_count = $user->tickets()->where('is_user_sent', '=', 1)->where('is_seen', '=', 0)->count();
+    }
+    return view('site.ticket.tickets', compact('users'))->with('text', $request->text);
+  }
+
+
 }

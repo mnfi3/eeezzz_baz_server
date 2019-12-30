@@ -27,7 +27,7 @@
                         <i class="fa fa-ticket"></i>
                         تیکت ها</strong>
                     </h3>
-                    <form role="form" action="InsertNewDCurrency" method="post" enctype="multipart/form-data">
+                    <form role="form" action="{{url('/panel/tickets/search')}}" method="post" enctype="multipart/form-data">
                         {{csrf_field()}}
                         <div class="form-body my-2">
                             <div class="form-group">
@@ -35,7 +35,7 @@
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                    <input type="text" name="name" class="form-control" value="" placeholder="نام کاربری یا ایمیل یا شماره موبایل">
+                                    <input type="text" name="text" class="form-control" @if(!empty($text)) value="{{$text}}" @endif  placeholder="نام کاربری یا ایمیل یا شماره موبایل">
                                 </div>
                             </div>
 

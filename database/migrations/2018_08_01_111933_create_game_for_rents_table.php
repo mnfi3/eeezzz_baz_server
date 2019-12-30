@@ -22,7 +22,6 @@ class CreateGameForRentsTable extends Migration
 //            $table->integer('address_id')->unsigned();
 //            $table->foreign('address_id')->references('id')->on('addresses');
             $table->integer('price');
-            $table->boolean('is_pending');
             $table->timestamps();
             $table->softDeletes();
             $table->charset = 'utf8';
