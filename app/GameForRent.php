@@ -11,7 +11,7 @@ class GameForRent extends Model
   use SoftDeletes;
 
 
-  protected $fillable = ['user_id', 'game_info_id', 'game_price', 'city_id', 'region', 'count', 'is_second_hand'];
+  protected $fillable = ['user_id', 'game_info_id', 'price', 'city_id','address_id', 'region', 'can_play_online', 'count', 'is_second_hand'];
 
 
   public function user(){
@@ -28,13 +28,21 @@ class GameForRent extends Model
   }
 
   public function photos(){
-    return $this->morphMany('App\Photo','imageable');
+    return $this->gameInfo()->photos;
+  }
+
+  public function coverPhoto(){
+    return $this->gameInfo->photos()->first();
   }
 
   public function reports(){
     return $this->morphMany('App\Report','reportable');
   }
 
+
+  public function rentShop(){
+    return $this->hasOne('App\RentShop');
+  }
 
   public function gameForShop(){
     return $this->belongsToMany('App\GameForShop', 'rent_shops');

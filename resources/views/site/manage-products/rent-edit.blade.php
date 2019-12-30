@@ -41,8 +41,10 @@
                         </div>
                         <div class="portlet-body">
                             <div class="portlet-body">
-                                <form role="form" action="InsertNewDCurrency" method="post" enctype="multipart/form-data">
+                                <form role="form" action="{{url('/panel/manage/products/games/update-rent')}}" method="post"
+                                      enctype="multipart/form-data">
                                     {{csrf_field()}}
+                                    <input type="hidden" name="id" value="{{$game->id}}">
                                     <div class="form-body">
 
                                         <div class="form-group">
@@ -51,19 +53,10 @@
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                                <select class="form-control" name="status">
-                                                    <option value="1" >God of War 4</option>
-                                                    <option value="2">pes 2019 </option>
-                                                    <option value="3">fifa 20 </option>
-                                                    <option value="4">need for speed </option>
-                                                    <option value="5">uncharted </option>
-                                                    <option value="6">GTA V</option>
-                                                    <option value="1" >God of War 4</option>
-                                                    <option value="2">pes 2019 </option>
-                                                    <option value="3">fifa 20 </option>
-                                                    <option value="4">need for speed </option>
-                                                    <option value="5">uncharted </option>
-                                                    <option value="6">GTA V</option>
+                                                <select class="form-control" name="game_info_id">
+                                                    @foreach($games as $game1)
+                                                        <option value="{{$game1->id}}" @if($game->gameInfo->id == $game1->id) selected @endif >{{$game1->name}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div><!-- /.input-group -->
                                         </div><!-- /.form-group -->
@@ -75,7 +68,8 @@
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                                <input type="number" name="name" class="form-control" value="" placeholder="به تومان">
+                                                <input type="number" name="price" class="form-control" value="{{$game->price}}"
+                                                       placeholder="به تومان">
                                             </div>
                                         </div>
 
@@ -85,24 +79,62 @@
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                                <input type="number" name="name" class="form-control" value="" placeholder="به عدد">
+                                                <select class="form-control" name="region">
+                                                    <option value="all" @if($game->region == 'all') selected @endif >all</option>
+                                                    <option value="1" @if($game->region == 1) selected @endif>1</option>
+                                                    <option value="2" @if($game->region == 2) selected @endif>2</option>
+                                                    <option value="3" @if($game->region == 3) selected @endif>3</option>
+                                                    <option value="4" @if($game->region == 4) selected @endif>4</option>
+                                                    <option value="5" @if($game->region == 5) selected @endif>5</option>
+                                                    <option value="6" @if($game->region == 6) selected @endif>6</option>
+                                                </select>
                                             </div>
                                         </div>
 
+
                                         <div class="form-group">
-                                            <label>تعداد</label>
+                                            <label>امکان بازی آنلاین</label>
                                             <div class="input-group round">
                                                 <span class="input-group-addon">
                                                     <i class="icon-info"></i>
                                                 </span>
-                                                <input type="number" name="name" class="form-control" value="" placeholder="به عدد">
+                                                <select class="form-control" name="can_play_online">
+                                                    <option value="0" @if($game->can_play_online == 0) selected @endif>ندارد</option>
+                                                    <option value="1" @if($game->can_play_online == 1) selected @endif>دارد</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>تعداد موجود</label>
+                                            <div class="input-group round">
+                                                <span class="input-group-addon">
+                                                    <i class="icon-info"></i>
+                                                </span>
+                                                <input type="number" name="count" class="form-control" value="{{$game->count}}"
+                                                       placeholder="به عدد">
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="form-group">
+                                        <label>کارکرد</label>
+                                        <div class="input-group round">
+                                                <span class="input-group-addon">
+                                                    <i class="icon-info"></i>
+                                                </span>
+                                            <select class="form-control" name="is_second_hand">
+                                                <option value="0" @if($game->is_second_hand == 0) selected @endif>نو</option>
+                                                <option value="1" @if($game->is_second_hand == 1) selected @endif>دست دوم</option>
+                                            </select>
+                                        </div><!-- /.input-group -->
+                                    </div><!-- /.form-group -->
+
                                     <div class="form-actions">
                                         <button type="submit" name="submit" class="btn btn-info btn-round">
-                                            <i class="fa fa-edit"></i>
-                                            ویرایش
+                                            <i class="icon-check"></i>
+                                            ذخیره
                                         </button>
                                     </div><!-- /.form-actions -->
                                 </form>

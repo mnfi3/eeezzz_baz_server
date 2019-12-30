@@ -87,4 +87,26 @@ class ms {
   //address
   const NOT_EXIST_ADDRESS_FOR_USER = 'هیچ آدرسی برای این کاربر ثبت نشده است';
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //admin panel messages
+  const ADMIN_SETTLEMENT_REQUEST_SUCCESS = 'کاربر گرامی درخواست تسویه حساب شما تایید شد';
+  const ADMIN_SETTLEMENT_PAYMENT_SUCCESS = '';
+
 }

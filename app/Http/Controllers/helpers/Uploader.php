@@ -6,7 +6,6 @@ namespace App\Http\Controllers\helpers;
 
 use App\Photo;
 use App\Video;
-use Illuminate\Support\Facades\Request;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class Uploader {

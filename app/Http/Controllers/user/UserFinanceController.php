@@ -183,6 +183,7 @@ class UserFinanceController extends Controller {
 
     $settlement = SettlementRequest::create([
       'user_id' => $user->id,
+      'amount' => $finance->user_balance,
       'bank_card_number' => $request->bank_card_number,
       'bank_account_number' => $request->bank_account_number,
       'bank_shba_number' => $request->bank_shba_number,

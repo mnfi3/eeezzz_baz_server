@@ -25,7 +25,7 @@
                     <div class="portlet-title">
                         <h3 class="title">
                             <i class="fa fa-money"></i>
-                            لیست درخواست های پرداخت
+                            لیست درخواست های جدید
                         </h3>
                     </div>
                     <div class="buttons-box">
@@ -58,42 +58,45 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+                                @php($i=0)
+                                @foreach($new_requests as $request)
                                 <tr>
-                                    <td> 1 <span class="new-order"> جدید </span></td>
+                                    <td> {{++$i}} </td>
                                     <td class="text-black">
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>AliMan68  </h6> </a>
+                                        <a href="{{url('/panel/user', $request->user->id)}}" class="bg-success p-2 table-link" style=""><h6>{{$request->user->full_name}}  </h6> </a>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>1398/09/12</h6><span>12:30:26</span>
+                                        <h6>{{\App\Http\Controllers\helpers\PDate::persianTime($request->created_at, true)}}</h6>
                                     </td>
                                     <td class="text-black" >
-                                    6037701172771880
+                                        {{$request->bank_card_number}}
                                     </td>
                                     <td class="text-black" >
-                                        IR2100000065971321654613
+                                        {{$request->bank_shba_number}}
                                     </td>
                                     <td class="text-black" >
-                                        65971321654613
+                                        {{$request->bank_account_number}}
                                     </td>
                                      <td class="text-black" >
-                                        <h6>شیخ محمودی</h6>
+                                        <h6> {{$request->bank_account_owner_name}}</h6>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>52000 تومان</h6>
+                                        <h6>{{number_format($request->first_amount)}} تومان</h6>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>593000 تومان</h6>
+                                        <h6>{{number_format($request->user->finance->user_balance)}} تومان</h6>
                                     </td>
                                     <td style="width: 100px">
-                                        <a class="btn btn-sm del-btn btn-success"  href="#">
+                                        <a class="btn btn-sm del-btn btn-success"  href="{{url('/panel/finance/confirm-settlement', $request->id)}}">
                                             تایید
                                         </a>
-                                        <a class="btn btn-sm del-btn btn-danger"  href="#">
+                                        <a class="btn btn-sm del-btn btn-danger"  href="{{url('/panel/finance/reject-settlement', $request->id)}}">
                                             رد
                                         </a>
                                     </td>
 
                                 </tr>
+                                @endforeach
 
                             </table>
                         </div><!-- /.table-responsive -->
@@ -109,7 +112,7 @@
                     <div class="portlet-title">
                         <h3 class="title">
                             <i class="fa fa-money"></i>
-                            لیست درخواست های تایید شده
+                            لیست درخواست های در انتظار پرداخت
                         </h3>
                     </div>
                     <div class="buttons-box">
@@ -138,42 +141,43 @@
                                     <th>شماره شبا</th>
                                     <th>شماره حساب</th>
                                     <th>نام صاحب حساب</th>
-                                    <th>مبلغ </th>
+                                    <th>مبلغ قابل پرداخت </th>
                                     <th>وضعیت </th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                @php($i=0)
+                                @foreach($confirmed_requests as $request)
                                 <tr>
-                                    <td> 1</td>
+                                    <td> {{++$i}}</td>
                                     <td class="text-black">
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>AliMan68  </h6> </a>
+                                        <a href="{{url('/panel/user', $request->user->id)}}" class="bg-success p-2 table-link" style=""><h6>{{$request->user->full_name}}  </h6> </a>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>1398/09/12</h6><span>12:30:26</span>
+                                        <h6>{{\App\Http\Controllers\helpers\PDate::persianTime($request->created_at, true)}}</h6>
                                     </td>
                                     <td class="text-black" >
-                                    6037701172771880
+                                        {{$request->bank_card_number}}
                                     </td>
                                     <td class="text-black" >
-                                        IR2100000065971321654613
+                                        {{$request->bank_shba_number}}
                                     </td>
                                     <td class="text-black" >
-                                        65971321654613
+                                        {{$request->bank_account_number}}
                                     </td>
-                                     <td class="text-black" >
-                                        <h6>شیخ محمودی</h6>
-                                    </td>
-
                                     <td class="text-black" >
-                                        <h6>593000 تومان</h6>
+                                        <h6> {{$request->bank_account_owner_name}}</h6>
+                                    </td>
+                                    <td class="text-black" >
+                                        <h6>{{number_format($request->final_amount)}} تومان</h6>
                                     </td>
                                     <td style="width: 100px">
-                                        <a class="btn btn-sm del-btn btn-success"  href="#">
-                                            پرداخت شده
-                                        </a>
+
+                                    <button class="btn btn-sm del-btn btn-success" style="max-width: 150px" data-toggle="modal" data-target="#myModal">پرداخت</button>
                                     </td>
 
                                 </tr>
+                                @endforeach
 
                             </table>
                         </div><!-- /.table-responsive -->
@@ -189,7 +193,7 @@
                     <div class="portlet-title">
                         <h3 class="title">
                             <i class="fa fa-money"></i>
-                            لیست پرداختی ها
+                            لیست پرداخت شده ها
                         </h3>
                     </div>
                     <div class="buttons-box">
@@ -220,48 +224,49 @@
                                     <th>نام صاحب حساب</th>
                                     <th>زمان واریز</th>
                                     <th>مبلغ</th>
-                                    <th>وضعیت </th>
+                                    <th>شماره رسید </th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                @php($i=0)
+                                @foreach($paid_requests as $request)
                                 <tr>
-                                    <td> 1</td>
+                                    <td> {{++$i}}</td>
                                     <td class="text-black">
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>AliMan68  </h6> </a>
+                                        <a href="{{url('/panel/user', $request->user->id)}}" class="bg-success p-2 table-link" style=""><h6>{{$request->user->full_name}}  </h6> </a>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>1398/09/12</h6><span>12:30:26</span>
+                                        <h6>{{\App\Http\Controllers\helpers\PDate::persianTime($request->created_at, true)}}</h6>
                                     </td>
                                     <td class="text-black" >
-                                        6037701172771880
+                                        {{$request->bank_card_number}}
                                     </td>
                                     <td class="text-black" >
-                                        IR2100000065971321654613
+                                        {{$request->bank_shba_number}}
                                     </td>
                                     <td class="text-black" >
-                                        65971321654613
+                                        {{$request->bank_account_number}}
                                     </td>
                                     <td class="text-black" >
-                                        <h6>شیخ محمودی</h6>
+                                        <h6> {{$request->bank_account_owner_name}}</h6>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>1397/11/09 و 16:9:59</h6>
+                                        <h6>{{\App\Http\Controllers\helpers\PDate::persianTime($request->payment->created_at, true)}}</h6>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>593000 تومان</h6>
+                                        <h6>{{number_format($request->final_amount)}} تومان</h6>
                                     </td>
                                     <td style="width: 100px">
-                                        <a class="btn btn-sm del-btn btn-success"  href="#">
-                                            انجام شد.
-                                        </a>
+                                        <h6>{{$request->payment->bank_receipt}}</h6>
                                     </td>
 
                                 </tr>
+                                @endforeach
 
                             </table>
                         </div><!-- /.table-responsive -->
                         <div class="pull-left">
-                            {{--{{ $currencyList->links() }}--}}
+                            {{ $paid_requests->links() }}
                         </div>
                         <div class="clearfix"></div>
                     </div><!-- /.portlet-body -->
@@ -302,49 +307,50 @@
                                     <th>شماره حساب</th>
                                     <th>نام صاحب حساب</th>
                                     <th>مبلغ زمان درخواست</th>
-                                    <th>مبلغ فعلی</th>
                                     <th>وضعیت </th>
                                 </tr>
                                 </thead>
                                 <tbody>
+                                @php($i=0)
+                                @foreach($rejected_requests as $request)
                                 <tr>
-                                    <td> 1</td>
+                                    <td> {{++$i}}</td>
                                     <td class="text-black">
-                                        <a href="#" class="bg-success p-2 table-link" style=""><h6>AliMan68  </h6> </a>
+                                        <a href="{{url('/panel/user', $request->user->id)}}" class="bg-success p-2 table-link" style=""><h6>{{$request->user->full_name}}  </h6> </a>
                                     </td>
                                     <td class="text-black" >
-                                        <h6>1398/09/12</h6><span>12:30:26</span>
+                                        <h6>{{\App\Http\Controllers\helpers\PDate::persianTime($request->created_at, true)}}</h6>
                                     </td>
                                     <td class="text-black" >
-                                    6037701172771880
+                                        {{$request->bank_card_number}}
                                     </td>
                                     <td class="text-black" >
-                                        IR2100000065971321654613
+                                        {{$request->bank_shba_number}}
                                     </td>
                                     <td class="text-black" >
-                                        65971321654613
-                                    </td>
-                                     <td class="text-black" >
-                                        <h6>شیخ محمودی</h6>
+                                        {{$request->bank_account_number}}
                                     </td>
                                     <td class="text-black" >
-                                        <h6>52000 تومان</h6>
+                                        <h6> {{$request->bank_account_owner_name}}</h6>
                                     </td>
+
                                     <td class="text-black" >
-                                        <h6>593000 تومان</h6>
+                                        <h6>{{number_format($request->first_amount)}} تومان</h6>
                                     </td>
+
                                     <td style="width: 100px">
-                                        <a class="btn btn-sm del-btn btn-danger"  href="#">
+                                        <h6 class="btn btn-sm del-btn btn-danger"  >
                                             رد شده
-                                        </a>
+                                        </h6>
                                     </td>
 
                                 </tr>
+                                @endforeach
 
                             </table>
                         </div><!-- /.table-responsive -->
                         <div class="pull-left">
-                            {{--{{ $currencyList->links() }}--}}
+                            {{ $rejected_requests->links() }}
                         </div>
                         <div class="clearfix"></div>
                     </div><!-- /.portlet-body -->
@@ -363,34 +369,39 @@
 </div>
 
 </div>
+
+@foreach($confirmed_requests as $request)
 <div class="modal fade" id="myModal" style="font-family: Vazir">
     <div class="modal-dialog">
         <div class="modal-content">
-
-            <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title text-right ml-auto">اطلاعات</h4>
+                <h4 class="modal-title text-right ml-auto"> اطلاعات پرداخت</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-
-            <!-- Modal body -->
             <div class="modal-body text-right">
-                <p> استان : تبریز </p>
-                <p> شهر :تبریز </p>
-                <p>جزییات :4 راه قطران،کوچه سرجسشمه ،پلاک7 ، طبقه دوم </p>
-                <p> شماره تماس :041 34421020</p>
-                <p>  موبایل :09365018124</p>
-
+                <form action="{{url('/panel/finance/save-site-payment')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="id" value="{{$request->id}}">
+                    <div class="form-group">
+                        <label>نام بانک</label>
+                        <input class="form-control" name="bank_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label> شماره رسید</label>
+                        <input class="form-control" name="bank_receipt" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" name="submit" class="btn btn-info btn-round">
+                            <i class="icon-check"></i>
+                            ذخیره
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="custom-btn btn-danger" data-dismiss="modal" style="max-width: 60px">بستن</button>
-            </div>
-
         </div>
     </div>
 </div>
+@endforeach
 </body>
 
 

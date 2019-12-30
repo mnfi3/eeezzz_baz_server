@@ -14,31 +14,30 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class AdminProductController extends Controller
-{
+class AdminProductController extends Controller {
   public function __construct() {
     $this->middleware('auth');
     $this->middleware('super_admin');
   }
 
 
-  public function games(){
+  public function games() {
     $games = GameInfo::orderBy('id', 'desc')->get();
     $consoles = ConsoleType::all();
     $genres = Genre::all();
     return view('site.manage-products.games', compact('games', 'consoles', 'genres'));
   }
 
-  public function gameAdd(Request $request){
+  public function gameAdd(Request $request) {
     $game = GameInfo::create([
-      'name' =>$request->name,
-      'persian_name' =>$request->persian_name,
-      'console_type_id' =>$request->console_type_id,
-      'age_class' =>$request->age_class,
-      'production_date' =>$request->production_date,
-      'can_play_online' =>$request->can_play_online,
-      'company_name' =>$request->company_name,
-      'description' =>$request->description,
+      'name' => $request->name,
+      'persian_name' => $request->persian_name,
+      'console_type_id' => $request->console_type_id,
+      'age_class' => $request->age_class,
+      'production_date' => $request->production_date,
+      'can_play_online' => $request->can_play_online,
+      'company_name' => $request->company_name,
+      'description' => $request->description,
     ]);
 
 
@@ -62,13 +61,13 @@ class AdminProductController extends Controller
     return back();
   }
 
-  public function gameRemove(Request $request){
+  public function gameRemove(Request $request) {
     $game = GameInfo::find($request->id);
     $game->delete();
     return back();
   }
 
-  public function gameEdit($id){
+  public function gameEdit($id) {
     $game = GameInfo::find($id);
     $consoles = ConsoleType::all();
     $genres = Genre::all();
@@ -76,7 +75,7 @@ class AdminProductController extends Controller
   }
 
 
-  public function gameUpdate(Request $request){
+  public function gameUpdate(Request $request) {
     $game = GameInfo::find($request->id);
     $game->name = $request->name;
     $game->persian_name = $request->persian_name;
@@ -98,18 +97,20 @@ class AdminProductController extends Controller
   }
 
 
-  public function productGames(){
+
+
+  public function productGames() {
     $games = GameInfo::orderBy('id', 'desc')->get();
     $game_for_rents = GameForRent::orderBy('id', 'desc')->paginate(20);
     $game_for_shops = GameForShop::orderBy('id', 'desc')->paginate(20);
     return view('site.manage-products.add_product_game', compact('games', 'game_for_rents', 'game_for_shops'));
   }
 
-  public function productGameAdd(Request $request){
+  public function productGameAdd(Request $request) {
     $user = Auth::user();
     $address = $user->storeInfo->address;
 
-    if ($request->type == 1 || $request->type == 2){
+    if ($request->type == 1 || $request->type == 2) {
       $game_for_rent = GameForRent::create([
         'user_id' => $user->id,
         'game_info_id' => $request->game_info_id,
@@ -117,12 +118,13 @@ class AdminProductController extends Controller
         'address_id' => $address->id,
         'price' => $request->price,
         'region' => $request->region,
+        'can_play_online' => $request->can_play_online,
         'count' => $request->count,
         'is_second_hand' => $request->is_second_hand,
       ]);
     }
 
-    if($request->type == 1 || $request->type == 3){
+    if ($request->type == 1 || $request->type == 3) {
       $game_for_shop = GameForShop::create([
         'user_id' => $user->id,
         'game_info_id' => $request->game_info_id,
@@ -130,12 +132,13 @@ class AdminProductController extends Controller
         'address_id' => $address->id,
         'price' => $request->price,
         'region' => $request->region,
+        'can_play_online' => $request->can_play_online,
         'count' => $request->count,
         'is_second_hand' => $request->is_second_hand,
       ]);
     }
 
-    if ($request->type == 1){
+    if ($request->type == 1) {
       $rent_shop = RentShop::create([
         'game_for_rent_id' => $game_for_rent->id,
         'game_for_shop_id' => $game_for_shop->id,
@@ -144,6 +147,57 @@ class AdminProductController extends Controller
 
     return back();
   }
+
+  public function editRent($id){
+    $games = GameInfo::orderBy('id', 'desc')->get();
+    $game = GameForRent::find($id);
+    return view('site.manage-products.rent-edit', compact('games','game'));
+  }
+
+  public function removeRent(Request $request){
+    $game = GameForRent::find($request->id);
+    $game->delete();
+    return back();
+  }
+
+  public function updateRent(Request $request){
+    $game = GameForRent::find($request->id);
+    $game->game_info_id = $request->game_info_id;
+    $game->price = $request->price;
+    $game->region = $request->region;
+    $game->can_play_online = $request->can_play_online;
+    $game->count = $request->count;
+    $game->is_second_hand = $request->is_second_hand;
+    $game->save();
+    return back();
+  }
+
+
+
+  public function editShop($id){
+    $games = GameInfo::orderBy('id', 'desc')->get();
+    $game = GameForShop::find($id);
+    return view('site.manage-products.sell-edit', compact('games','game'));
+  }
+
+  public function removeShop(Request $request){
+    $game = GameForShop::find($request->id);
+    $game->delete();
+    return back();
+  }
+
+  public function updateShop(Request $request){
+    $game = GameForShop::find($request->id);
+    $game->game_info_id = $request->game_info_id;
+    $game->price = $request->price;
+    $game->region = $request->region;
+    $game->can_play_online = $request->can_play_online;
+    $game->count = $request->count;
+    $game->is_second_hand = $request->is_second_hand;
+    $game->save();
+    return back();
+  }
+
 
 
 

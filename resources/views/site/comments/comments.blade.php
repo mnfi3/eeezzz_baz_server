@@ -65,7 +65,7 @@
                                     <tr>
                                         <td> {{++$i}} </td>
                                         <td class="text-black">
-                                            <a href="#" class="bg-success p-2 table-link" style="">
+                                            <a href="{{url('/panel/user', $comment->user->id)}}" class="bg-success p-2 table-link" style="">
                                                 <h6>{{$comment->user->full_name}}</h6></a>
                                         </td>
                                         <td class="text-black">
@@ -141,7 +141,7 @@
                                     <tr>
                                         <td> {{++$i}}</td>
                                         <td class="text-black">
-                                            <a href="#" class="bg-success p-2 table-link" style="">
+                                            <a href="{{url('/panel/user', $comment->user->id)}}" class="bg-success p-2 table-link" style="">
                                                 <h6>{{$comment->user->full_name}}</h6></a>
                                         </td>
                                         <td class="text-black">
@@ -214,7 +214,7 @@
                                     <tr>
                                         <td> {{++$i}} </td>
                                         <td class="text-black">
-                                            <a href="#" class="bg-success p-2 table-link" style="">
+                                            <a href="{{url('/panel/user', $comment->user->id)}}" class="bg-success p-2 table-link" style="">
                                                 <h6>{{$comment->user->full_name}}</h6></a>
                                         </td>
                                         <td class="text-black">

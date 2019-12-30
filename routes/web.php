@@ -79,14 +79,24 @@ Route::get('/panel/latest-orders-rents', 'admin\AdminOrderController@latestOrder
 Route::get('/panel/latest-orders-sell', 'admin\AdminOrderController@latestOrdersSells');
 
 
-//Manage Products (games)
+//Manage game infos
 Route::get('/panel/manage-games', 'admin\AdminProductController@games');
 Route::post('/panel/game-add', 'admin\AdminProductController@gameAdd');
 Route::post('/panel/game-remove', 'admin\AdminProductController@gameRemove');
 Route::get('/panel/game-edit/{id}', 'admin\AdminProductController@gameEdit');
 Route::post('/panel/game-update', 'admin\AdminProductController@gameUpdate');
 
+//rents and shops
 Route::get('/panel/manage/products/games', 'admin\AdminProductController@productGames');
+Route::post('/panel/manage/products/game/add', 'admin\AdminProductController@productGameAdd');
+
+Route::get('/panel/manage/products/games/edit-rent/{id}', 'admin\AdminProductController@editRent');
+Route::post('/panel/manage/products/games/remove-rent', 'admin\AdminProductController@removeRent');
+Route::post('/panel/manage/products/games/update-rent', 'admin\AdminProductController@updateRent');
+
+Route::get('/panel/manage/products/games/edit-shop/{id}', 'admin\AdminProductController@editShop');
+Route::post('/panel/manage/products/games/remove-shop', 'admin\AdminProductController@removeShop');
+Route::post('/panel/manage/products/games/update-shop', 'admin\AdminProductController@updateShop');
 
 //Route::get('/panel/rents', function () {
 //  return view('site.manage-products.rent');
@@ -138,9 +148,10 @@ Route::post('/panel/post/update', 'admin\AdminPostController@postUpdate');
 
 
 
-Route::get('/panel/finance', function () {
-  return view('site.finance.finance');
-});
+Route::get('/panel/finance', 'admin\AdminFinanceController@settlements');
+Route::get('/panel/finance/confirm-settlement/{id}', 'admin\AdminFinanceController@confirmSettlement');
+Route::get('/panel/finance/reject-settlement/{id}', 'admin\AdminFinanceController@rejectSettlement');
+Route::post('/panel/finance/save-site-payment', 'admin\AdminFinanceController@saveSitePayment');
 
 Route::get('/panel/report', function () {
   return view('site.report.report');
