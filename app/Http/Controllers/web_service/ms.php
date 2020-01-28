@@ -11,6 +11,7 @@ class ms {
   const REGISTER_PHONE_NUMBER_ERROR = 'این شماره موبایل در سیستم وجود دارد';
   const REGISTER_EMAIL_ERROR = 'این ایمیل در سیستم وجود دارد';
   const REGISTER_PASSWORD_ERROR = 'لطفا کلمه عبور بهتری وارد کنید';
+  const REGISTER_MOBILE_ERROR = 'این شماره تلفن قبلا در سیستم ثبت شده است';
   const REGISTER_SUCCESS = 'حساب با موفقیت ایجاد شد';
   const USER_NAME_NOT_AVAILABLE = 'این نام کاربری در دسترس نمی باشد لطفا نام کاربری دیگری انتخاب کنید(حداقل 5 کاراکتر)';
   const USER_NAME_AVAILABLE = 'این نام کاربری در دسترس بوده و میتوانید انتخاب کنید';
@@ -61,6 +62,7 @@ class ms {
   const SETTLEMENT_REQUEST_SUCCESS = 'درخواست تسویه حساب شما با موفقیت ثبت شد';
   const SETTLEMENT_REQUEST_DUPLICATE = 'شما قبلا درخواست تسویه حساب داده اید.لطفا شکیبا باشید تا درخواست شما بررسی شود';
   const SETTLEMENT_NOT_EXIST = 'هیچ درخواست تسویه ای وجود ندارد';
+  const SETTLEMENT_DADA_INVALID = 'اطلاعات ارسالی برای تسویه حساب اشتباه است';
 
 
   //product
@@ -87,8 +89,10 @@ class ms {
   //address
   const NOT_EXIST_ADDRESS_FOR_USER = 'هیچ آدرسی برای این کاربر ثبت نشده است';
 
-
-
+  //sms
+  const SMS_TO_MANY_CODE_REQUEST = 'تعداد درخواست شما برای ارسال کد بیش از حد می باشد';
+  const SMS_SENT_SUCCESS = 'کد فعالسازی ارسال شد';
+  const SMS_VERIFICATION_CODE_INVALID = 'کد فعالسازی وارد شده اشتباه است';
 
 
 

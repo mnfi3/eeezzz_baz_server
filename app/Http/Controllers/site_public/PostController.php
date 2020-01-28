@@ -61,7 +61,7 @@ class PostController extends Controller
     if(sizeof($posts) > 0){
       return ws::r(1, $posts, 200, '');
     }else{
-      return ws::r(0, '', 200, ms::SEARCH_RESULT_NULL);
+      return ws::r(0, [], 200, ms::SEARCH_RESULT_NULL);
     }
   }
 }

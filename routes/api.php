@@ -103,7 +103,8 @@ Route::get('/rent-game-after-pay/{request_id}/{user_id}/{game_id}/{game_price}/{
 Route::post('/rent-game-with-wallet', 'user\GameForRentController@rentGameWithWallet');
 
 
-
+Route::post('/verification/code-request', 'user\VerificationCodeController@getCode');
+Route::post('/verification/code-verify', 'user\VerificationCodeController@verifyCode');
 
 
 

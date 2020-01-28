@@ -143,7 +143,7 @@ class GameForShopController extends Controller {
     if (sizeof($gameForShops) > 0) {
       return ws::r(1, $gameForShops, 200, '');
     } else {
-      return ws::r(0, '', 200, ms::SEARCH_RESULT_NULL);
+      return ws::r(0, [], 200, ms::SEARCH_RESULT_NULL);
     }
 
   }
@@ -162,7 +162,7 @@ class GameForShopController extends Controller {
     $user = Auth::user();
     $user_finance = $user->finance;
 
-    if ($user_finance === null) {
+    if ($user_finance == null) {
       return ws::r(0, '', Response::HTTP_OK, ms::BALANCE_NOT_ENOUGH);
     }
 

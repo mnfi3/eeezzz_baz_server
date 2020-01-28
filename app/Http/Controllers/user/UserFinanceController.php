@@ -173,12 +173,16 @@ class UserFinanceController extends Controller {
     }
     $data = $request->toArray();
     $validator = Validator::make($data, [
-      'bank_shba_number' => 'required|string|max:30|min:10',
+//      'bank_shba_number' => 'required|string|max:30|min:10',
       'bank_account_owner_name' => 'required|string|max:30',
     ]);
 
     if ($validator->fails()) {
       return ws::r(0, '', Response::HTTP_OK, ms::INVALID_DATA);
+    }
+
+    if(strlen($request->bank_card_number) < 5 && strlen($request->bank_account_number) < 5 && strlen($request->bank_shba_number) < 5){
+      return ws::r(0, '', Response::HTTP_OK, ms::SETTLEMENT_DADA_INVALID);
     }
 
     $settlement = SettlementRequest::create([

@@ -107,7 +107,7 @@ class GameForRentController extends Controller {
     $city_id = $request->input('city_id');
 
     if (strlen($text) < 3) {
-      return ws::r(0, '', 200, ms::SEARCH_TEXT_TOO_SMALL);
+      return ws::r(0, [], 200, ms::SEARCH_TEXT_TOO_SMALL);
     }
 
     $games = GameInfo::orderBy('created_at', 'desc')->where('name', 'like', '%' . $text . '%')->orWhere('persian_name', 'like', '%' . $text . '%')->get();
@@ -137,7 +137,7 @@ class GameForRentController extends Controller {
     if (sizeof($gameForRents) > 0) {
       return ws::r(1, $gameForRents, 200, '');
     } else {
-      return ws::r(0, '', 200, ms::SEARCH_RESULT_NULL);
+      return ws::r(0, [], 200, ms::SEARCH_RESULT_NULL);
     }
 
   }

@@ -33,14 +33,19 @@ class PassportController extends Controller
     $data = $request->toArray();
 
     $validator1 = Validator::make($data, [
-      'full_name' => 'required|max:50|min:6',
+      'full_name' => 'required|max:50|min:5',
     ]);
 
     $validator2 = Validator::make($data, [
       'email' => 'required|email|unique:users'
     ]);
+
     $validator3 = Validator::make($data, [
       'password' => 'required|string|min:6'
+    ]);
+
+    $validator4 = Validator::make($data, [
+      'mobile' => 'required|max:14|min:9|unique:users'
     ]);
 
 
@@ -50,11 +55,14 @@ class PassportController extends Controller
       return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_EMAIL_ERROR);
     }elseif ($validator3->fails()){
       return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_PASSWORD_ERROR);
+    }elseif ($validator4->fails()){
+      return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_MOBILE_ERROR);
     }
 
     $user = User::create([
       'full_name' => $request->full_name,
       'email' => $request->email,
+      'mobile' => $request->mobile,
 //      'password' => bcrypt($request->password),
       'password' => Hash::make($request->password),
       'invite_code' => UserHelper::generateInviteCode()
