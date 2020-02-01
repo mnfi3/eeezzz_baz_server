@@ -7,6 +7,7 @@ use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
 use App\User;
 use App\VerificationCode;
+use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -44,6 +45,10 @@ class VerificationCodeController extends Controller
       $user = User::where('mobile', '=', $mobile)->first();
       if ($user == null) return ws::r(0, [], 200, ms::SMS_MOBILE_INVALID);
 
+      //remove old codes
+      $vcs = VerificationCode::where('mobile', '=', $mobile)->get();
+      foreach ($vcs as $vc) $vc->delete();
+
       $vc = VerificationCode::generateCode($mobile);
       Smsirlaravel::sendVerification($vc->code, $mobile);
       return ws::r(1, [], 200, ms::SMS_SENT_SUCCESS);
@@ -61,15 +66,17 @@ class VerificationCodeController extends Controller
       $now = date('Y-m-d H:i:s');
       $vc = VerificationCode::orderBy('id', 'desc')->where('mobile', '=', $mobile)->where('code', '=', $code)->where('is_verified', '=', 0)->where('invoked_at', '>', $now)->first();
 
-      if ($vc == null){
-        return ws::r(0, [], 200, ms::SMS_VERIFICATION_CODE_INVALID);
-      }
+      if ($vc == null) return ws::r(0, [], 200, ms::SMS_VERIFICATION_CODE_INVALID);
 
+      $dateTime = new DateTime(date('Y-m-d H:i:s'));
+      $dateTime->add(new DateInterval('PT' . VerificationCode::TOKEN_INVOKE_DURATION . 'M'));
+      $token_invoke_time = $dateTime->format('Y-m-d H:i:s');
+
+      $obj = ['token_status' => 'valid', 'token_invoked_at' => $token_invoke_time, 'mobile' => $mobile, 'code' => $code, 'verified_at' => $now];
+      $vc->token = MCrypt::encrypt(json_encode($obj));
       $vc->is_verified = 1;
-      $obj = ['secret_status' => '', 'secret_invoked_at'=>'', 'mobile' => $mobile, 'code'=>$code, 'verified_at'=>$now];
-      $vc->secret = MCrypt::encrypt(json_encode($obj));
       $vc->save();
 
-      return ws::r(0, ['vc' => $vc], 200, ms::SMS_VERIFICATION_CODE_VALIDATION_SUCCESS);
+      return ws::r(0, ['verification_code' => $vc], 200, ms::SMS_VERIFICATION_CODE_VALIDATION_SUCCESS);
     }
 }

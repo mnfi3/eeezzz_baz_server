@@ -3,27 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\helpers\AdminHelper;
+use App\Http\Controllers\helpers\MCrypt;
 use App\Http\Controllers\helpers\UserHelper;
 use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
 use App\User;
 use App\VerificationCode;
+use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 
 use Lcobucci\JWT\Parser;
-use DB;
 
 
 class PassportController extends Controller
 {
 
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    $this->middleware('auth:api', ['except' => ['login', 'register', 'resetPassword']]);
   }
 
 
@@ -46,17 +48,14 @@ class PassportController extends Controller
       'mobile' => 'required|max:11|min:11|unique:users'
     ]);
 
-    if ($validator1->fails()) return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_NAME_ERROR);
-    if ($validator2->fails()) return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_EMAIL_ERROR);
-    if ($validator3->fails()) return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_PASSWORD_ERROR);
-    if ($validator4->fails()) return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_NATIONAL_NUMBER_ERROR);
-    if ($validator5->fails()) return ws::r(0, '', Response::HTTP_OK , ms::REGISTER_MOBILE_ERROR);
+    if ($validator1->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_NAME_ERROR);
+    if ($validator2->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_EMAIL_ERROR);
+    if ($validator3->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_PASSWORD_ERROR);
+    if ($validator4->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_NATIONAL_NUMBER_ERROR);
+    if ($validator5->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_MOBILE_ERROR);
 
-    $secret = $request->secret;
-    $vc = VerificationCode::orderBy('id', 'desc')->where('secret', '=', $secret)->where('is_verified', '=', 1)->first();
-    if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_SECRET_INVALID);
-
-    $vc->invokeSecret();
+    $vc = VerificationCode::validateToken($request->token);
+    if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);
 
     $user = User::create([
       'full_name' => $request->full_name,
@@ -67,6 +66,7 @@ class PassportController extends Controller
       'invite_code' => UserHelper::generateInviteCode()
     ]);
 
+    $vc->invokeToken();
     $token = $user->createToken($user->email)->accessToken;
 
     return ws::r(1,['token' => $token , 'user' => $user], Response::HTTP_OK,ms::REGISTER_SUCCESS);
@@ -75,30 +75,50 @@ class PassportController extends Controller
 
   public function login(Request $request)
   {
-//    $credentials = [
-//      'email' => $request->email,
-//      'password' => $request->password
-//    ];
-//
-//    if (auth()->attempt($credentials)) {
-//      $token = auth()->user()->createToken($request->email)->accessToken;
-//      if (AdminHelper::isAdmin()){
-//        return ws::r(1, ['token' => $token, 'user' => Auth::user(), 'is_admin' => 1], Response::HTTP_OK, ms::LOGIN_SUCCESS);
-//      }
-//      return ws::r(1, ['token' => $token, 'user' => Auth::user()], Response::HTTP_OK, ms::LOGIN_SUCCESS);
-//    } else {
-//      return ws::r(0,'', Response::HTTP_OK, ms::LOGIN_FAIL_ERROR);
-//    }
-
     $user = User::where('mobile', '=', $request->mobile)->first();
     if ($user == null) return ws::r(0, [], 200, ms::LOGIN_MOBILE_FAIL);
-    if (!Hash::check($request->password, $user->password)) return ws::r(0, [], 200, ms::LOGIN_PASSWORD_FAIL);
+    $password = $request->password;
+//    $password = MCrypt::decryptRSA_PRV($request->password);
+    if (!Hash::check($password, $user->password)) return ws::r(0, [], 200, ms::LOGIN_PASSWORD_FAIL);
 
     $token = $user->createToken($request->mobile)->accessToken;
-
     if (AdminHelper::isAdmin())  return ws::r(1, ['token' => $token, 'user' => $user, 'is_admin' => 1], Response::HTTP_OK, ms::LOGIN_SUCCESS);
     else return ws::r(1, ['token' => $token, 'user' => $user], Response::HTTP_OK, ms::LOGIN_SUCCESS);
 
+  }
+
+
+  public function changePassword(Request $request){
+    $user = Auth::user();
+    $old_password = $request->old_password;
+    $new_password = $request->new_password;
+
+//    $old_password = MCrypt::decryptRSA_PRV($request->old_password);
+//    $new_password = MCrypt::decryptRSA_PRV($request->new_password);
+
+    if(!Hash::check($old_password, $user->password)) return ws::r(0, [], 200, ms::CHANGE_PASSWORD_OLD_PASS_ERROR);
+    if (str($new_password) < 6) return ws::r(0, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_NEW_PASS_ERROR);
+
+    $user->password = Hash::make($new_password);
+    $user->save();
+    return ws::r(1, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_SUCCESS);
+  }
+
+
+  public function resetPassword(Request $request){
+    $vc = VerificationCode::validateToken($request->token);
+    if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);
+
+    $new_password = $request->new_password;
+//    $new_password = MCrypt::decryptRSA_PRV($request->new_password);
+    if (str($new_password) < 6) return ws::r(0, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_NEW_PASS_ERROR);
+    $user = User::where('mobile', '=', $vc->mobile)->first();
+    if($user == null) return ws::r(0, [], Response::HTTP_OK , ms::SMS_MOBILE_USER_NOT_FOUND);
+
+    $vc->invokeToken();
+    $user->password = Hash::make($new_password);
+    $user->save();
+    return ws::r(1, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_SUCCESS);
   }
 
 
@@ -112,18 +132,12 @@ class PassportController extends Controller
       $revoked = DB::table('oauth_access_tokens')->where('id', '=', $id)->update(['revoked' => 1]);
 //      auth()->guard()->logout();
     }
-//    Auth::logout();
     return ws::r(1,'', Response::HTTP_OK, ms::LOGOUT_SUCCESS);
 
 
 
 
-//    if (auth()->user() !== null) {
-//      Auth::user()->AauthAcessToken()->delete();
-//      return ws::r(1,'', Response::HTTP_OK, ms::LOGOUT_SUCCESS);
-//    }else{
-//      return ws::r(0,'', Response::HTTP_INTERNAL_SERVER_ERROR, ms::INTERNAL_SERVER_ERROR);
-//    }
+
   }
 
 

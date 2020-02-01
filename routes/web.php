@@ -61,10 +61,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/test', function () {
-  $game = \App\GameForShop::find(1);
-  $game->gameForRent;
-  $game->address;
-  return $game;
+  $string = 'mohsen';
+  $enc = \App\Http\Controllers\helpers\MCrypt::encryptRSA_PUB($string);
+  $dec = \App\Http\Controllers\helpers\MCrypt::decryptRSA_PRV($enc);
+  echo "enc=$enc<br><br>dec=$dec";
 });
 
 

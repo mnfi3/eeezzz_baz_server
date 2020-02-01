@@ -3,6 +3,8 @@
 
 //User auth API
 Route::post('login', 'PassportController@login');
+Route::post('change-password', 'PassportController@changePassword');
+Route::post('reset-password', 'PassportController@resetPassword');
 Route::post('register', 'PassportController@register');
 Route::post('user_name-status', 'user\UserController@userNameAvailable');
 Route::get('user', 'PassportController@user')->name('user');
