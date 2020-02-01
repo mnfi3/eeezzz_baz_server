@@ -102,12 +102,11 @@ Route::post('/rent-game', 'user\GameForRentController@rentGame')->name('rent-gam
 Route::get('/rent-game-after-pay/{request_id}/{user_id}/{game_id}/{game_price}/{sum_price}/{rent_type_id}/{rent_price}/{address_id}', 'user\GameForRentController@rentGameAfterPay')->name('rent-game-after-pay');
 Route::post('/rent-game-with-wallet', 'user\GameForRentController@rentGameWithWallet');
 
-
-Route::post('/verification/code-request', 'user\VerificationCodeController@getCode');
-Route::post('/verification/code-verify', 'user\VerificationCodeController@verifyCode');
-
-
-
 //-------------------------------------------------------------------------
+
+//verification code
+Route::post('/verification/code-request/register', 'user\VerificationCodeController@getRegisterCode');
+Route::post('/verification/code-request/reset-password', 'user\VerificationCodeController@getResetPasswordCode');
+Route::post('/verification/code-verify', 'user\VerificationCodeController@verifyCode');
 
 

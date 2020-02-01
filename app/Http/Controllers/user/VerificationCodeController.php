@@ -5,26 +5,54 @@ namespace App\Http\Controllers\user;
 use App\Http\Controllers\helpers\MCrypt;
 use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
+use App\User;
 use App\VerificationCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Ipecompany\Smsirlaravel\Smsirlaravel;
 
 class VerificationCodeController extends Controller
 {
-    public function getCode(Request $request){
-      $mobile = $request->mobile;
-      $now = date('Y-m-d H:i:s');
-      $codes = VerificationCode::where('mobile', '=', $mobile)->where('is_verified', '=', 0)->where('invoked_at', '>', $now)->get();
-      if (count($codes) > 3){
-        return ws::r(0, [], 200, ms::SMS_TO_MANY_CODE_REQUEST);
-      }
+    public function getRegisterCode(Request $request){
+      $data = $request->toArray();
+      $validator1 = Validator::make($data, [
+        'mobile' => 'required|string|max:11|min:11',
+      ]);
+      $validator2 = Validator::make($data, [
+        'mobile' => 'unique:users',
+      ]);
 
+      if($validator1->fails()) return ws::r(0, [], 200, ms::SMS_MOBILE_INVALID);
+      if($validator2->fails()) return ws::r(0, [], 200, ms::SMS_REGISTER_MOBILE_DUPLICATE);
+
+      $mobile = $request->mobile;
       $vc = VerificationCode::generateCode($mobile);
-      $vc->save();
       Smsirlaravel::sendVerification($vc->code, $mobile);
       return ws::r(1, [], 200, ms::SMS_SENT_SUCCESS);
     }
+
+
+    public function getResetPasswordCode(Request $request){
+      $data = $request->toArray();
+      $validator1 = Validator::make($data, [
+        'mobile' => 'required|string|max:11|min:11',
+      ]);
+      if($validator1->fails()) return ws::r(0, [], 200, ms::SMS_MOBILE_INVALID);
+
+      $mobile = $request->mobile;
+      $user = User::where('mobile', '=', $mobile)->first();
+      if ($user == null) return ws::r(0, [], 200, ms::SMS_MOBILE_INVALID);
+
+      $vc = VerificationCode::generateCode($mobile);
+      Smsirlaravel::sendVerification($vc->code, $mobile);
+      return ws::r(1, [], 200, ms::SMS_SENT_SUCCESS);
+    }
+
+
+
+
+
 
 
     public function verifyCode(Request $request){
@@ -38,9 +66,10 @@ class VerificationCodeController extends Controller
       }
 
       $vc->is_verified = 1;
-      $vc->secret = MCrypt::encrypt("mobile=>$mobile,code=>$code,now=>$now");
+      $obj = ['secret_status' => '', 'secret_invoked_at'=>'', 'mobile' => $mobile, 'code'=>$code, 'verified_at'=>$now];
+      $vc->secret = MCrypt::encrypt(json_encode($obj));
       $vc->save();
 
-      return ws::r(0, ['vc' => $vc], 200, ms::SMS_VERIFICATION_CODE_INVALID);
+      return ws::r(0, ['vc' => $vc], 200, ms::SMS_VERIFICATION_CODE_VALIDATION_SUCCESS);
     }
 }

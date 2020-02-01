@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Route::get('/test-sms', function () {
 //  Smsirlaravel::ultraFastSend(['user'=>'محسن فرجامی','verificationCode'=>'1375'],20565,'09145821998');
-  Smsirlaravel::sendVerification('1375124', '9145821998');
+//  Smsirlaravel::sendVerification('1375124', '09365018124');
 //  Smsirlaravel::send(['test from easybazi!'],['09145821998']);
 //  Smsirlaravel::send(['test from easybazi!'],['09303484023']);
 //  Smsirlaravel::ultraFastSend(['user'=>'username','verificationCode'=>'12345'],350,'09145821998');

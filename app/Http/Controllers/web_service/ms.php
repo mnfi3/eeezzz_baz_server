@@ -9,15 +9,19 @@ class ms {
   const REGISTER_NAME_ERROR = 'لطفا نام و نام خانوادگی  خود را به درستی وارد کنید';
   const REGISTER_USER_NAME_ERROR = 'این نام کاربری در سیستم وجود دارد';
   const REGISTER_PHONE_NUMBER_ERROR = 'این شماره موبایل در سیستم وجود دارد';
-  const REGISTER_EMAIL_ERROR = 'این ایمیل در سیستم وجود دارد';
+  const REGISTER_EMAIL_ERROR = 'ایمیل وارد شده اشتباه است';
   const REGISTER_PASSWORD_ERROR = 'لطفا کلمه عبور بهتری وارد کنید';
   const REGISTER_MOBILE_ERROR = 'این شماره تلفن قبلا در سیستم ثبت شده است';
+  const REGISTER_NATIONAL_NUMBER_ERROR = 'این  کد ملی قبلا در سیستم ثبت شده است یا به اشتباه وارد شده است';
   const REGISTER_SUCCESS = 'حساب با موفقیت ایجاد شد';
+  const REGISTER_SECRET_INVALID = 'کد امنیتی ارسال شده اشتباه است';
   const USER_NAME_NOT_AVAILABLE = 'این نام کاربری در دسترس نمی باشد لطفا نام کاربری دیگری انتخاب کنید(حداقل 5 کاراکتر)';
   const USER_NAME_AVAILABLE = 'این نام کاربری در دسترس بوده و میتوانید انتخاب کنید';
 
   //login
   const LOGIN_FAIL_ERROR = 'ورود به حساب کاربری انجام نشد.لطفا ایمیل و رمز عبور خود را با دقت وارد کنید';
+  const LOGIN_MOBILE_FAIL = 'ورود به حساب کاربری انجام نشد.لطفا شماره موبایل خود را با دقت وارد کنید';
+  const LOGIN_PASSWORD_FAIL = 'ورود به حساب کاربری انجام نشد.لطفا رمز عبور خود را با دقت وارد کنید';
   const LOGIN_SUCCESS = 'با موفقیت وارد شدید';
   const LOGIN_RETRY = 'شما قبلا وارد حساب کاربری شده اید';
   const MUST_BE_LOGIN = 'لطفا وارد حساب کاربری خود شوید';
@@ -92,7 +96,10 @@ class ms {
   //sms
   const SMS_TO_MANY_CODE_REQUEST = 'تعداد درخواست شما برای ارسال کد بیش از حد می باشد';
   const SMS_SENT_SUCCESS = 'کد فعالسازی ارسال شد';
+  const SMS_MOBILE_INVALID = 'شماره تلفن وارد شده اشتباه است';
+  const SMS_REGISTER_MOBILE_DUPLICATE = 'این شماره تلفن از قبل در سیستم ثبت شده است';
   const SMS_VERIFICATION_CODE_INVALID = 'کد فعالسازی وارد شده اشتباه است';
+  const SMS_VERIFICATION_CODE_VALIDATION_SUCCESS = 'شماره موبایل تایید شد';
 
 
 

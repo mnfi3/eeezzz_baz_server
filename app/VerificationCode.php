@@ -11,6 +11,8 @@ class VerificationCode extends Model
 {
   use SoftDeletes;
 
+  const INVOKE_TIME = 4;//minutes
+
   protected $fillable = ['mobile', 'code', 'secret', 'is_verified', 'invoked_at'];
 
 
@@ -22,17 +24,21 @@ class VerificationCode extends Model
     $vc->code = SystemHelper::generateRandomNumber(5);
     $vc->secret = '';
     $vc->is_verified = 0;
-    $minutes_to_add = 4;
     $dateTime = new DateTime(date('Y-m-d H:i:s'));
-    $dateTime->add(new DateInterval('PT' . $minutes_to_add . 'M'));
+    $dateTime->add(new DateInterval('PT' . self::INVOKE_TIME . 'M'));
     $time = $dateTime->format('Y-m-d H:i:s');
     $vc->invoked_at = $time;
-
+    $vc->save();
     return $vc;
   }
 
-  public function invokeSecret($vc){
-    $vc->secret = MCrypt::encrypt('status=>invoked,' . MCrypt::decrypt($vc->secret));
-    $vc->save();
+
+  public function invokeSecret(){
+    $now = date('Y-m-d H:i:s');
+    $obj = json_decode(MCrypt::decrypt($this->secret));
+    $obj->secret_status = 'invoked';
+    $obj->secret_invoked_at =  $now;
+    $this->secret = MCrypt::encrypt(json_encode($obj));
+    $this->save();
   }
 }
