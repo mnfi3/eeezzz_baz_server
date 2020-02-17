@@ -30,7 +30,8 @@ class VerificationCodeController extends Controller
 
       $mobile = $request->mobile;
       $vc = VerificationCode::generateCode($mobile);
-      Smsirlaravel::sendVerification($vc->code, $mobile);
+//      Smsirlaravel::sendVerification($vc->code, $mobile);
+      Smsirlaravel::ultraFastSend(['VerificationCode' => $vc->code], 20565, $mobile);
       return ws::r(1, [], 200, ms::SMS_SENT_SUCCESS);
     }
 
@@ -46,12 +47,10 @@ class VerificationCodeController extends Controller
       $user = User::where('mobile', '=', $mobile)->first();
       if ($user == null) return ws::r(0, [], 200, ms::SMS_MOBILE_INVALID);
 
-      //remove old codes
-      $vcs = VerificationCode::where('mobile', '=', $mobile)->get();
-      foreach ($vcs as $vc) $vc->delete();
 
       $vc = VerificationCode::generateCode($mobile);
-      Smsirlaravel::sendVerification($vc->code, $mobile);
+//      Smsirlaravel::sendVerification($vc->code, $mobile);
+      Smsirlaravel::ultraFastSend(['VerificationCode' => $vc->code], 20565, $mobile);
       return ws::r(1, [], 200, ms::SMS_SENT_SUCCESS);
     }
 

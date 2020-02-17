@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\helpers\AdminHelper;
-use App\Http\Controllers\helpers\MCrypt;
 use App\Http\Controllers\helpers\UserHelper;
 use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
 use App\User;
 use App\VerificationCode;
-use function GuzzleHttp\Psr7\str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -67,6 +65,7 @@ class PassportController extends Controller
     ]);
 
     $vc->invokeToken();
+    $vc->delete();
     $token = $user->createToken($user->mobile)->accessToken;
 
     return ws::r(1,['token' => $token , 'user' => $user], Response::HTTP_OK,ms::REGISTER_SUCCESS);
@@ -97,7 +96,7 @@ class PassportController extends Controller
 //    $new_password = MCrypt::decryptRSA_PRV($request->new_password);
 
     if(!Hash::check($old_password, $user->password)) return ws::r(0, [], 200, ms::CHANGE_PASSWORD_OLD_PASS_ERROR);
-    if (str($new_password) < 6) return ws::r(0, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_NEW_PASS_ERROR);
+    if (strlen($new_password) < 6) return ws::r(0, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_NEW_PASS_ERROR);
 
     $user->password = Hash::make($new_password);
     $user->save();
@@ -109,13 +108,16 @@ class PassportController extends Controller
     $vc = VerificationCode::validateToken($request->token);
     if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);
 
-    $new_password = $request->new_password;
-//    $new_password = MCrypt::decryptRSA_PRV($request->new_password);
-    if (str($new_password) < 6) return ws::r(0, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_NEW_PASS_ERROR);
     $user = User::where('mobile', '=', $vc->mobile)->first();
     if($user == null) return ws::r(0, [], Response::HTTP_OK , ms::SMS_MOBILE_USER_NOT_FOUND);
 
+    $new_password = $request->password;
+//    $new_password = MCrypt::decryptRSA_PRV($request->new_password);
+    if (strlen($new_password) < 6) return ws::r(0, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_NEW_PASS_ERROR);
+
+
     $vc->invokeToken();
+    $vc->delete();
     $user->password = Hash::make($new_password);
     $user->save();
     return ws::r(1, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_SUCCESS);
@@ -133,11 +135,6 @@ class PassportController extends Controller
 //      auth()->guard()->logout();
     }
     return ws::r(1,'', Response::HTTP_OK, ms::LOGOUT_SUCCESS);
-
-
-
-
-
   }
 
 
