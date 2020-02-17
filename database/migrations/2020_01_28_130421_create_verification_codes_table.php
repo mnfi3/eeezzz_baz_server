@@ -17,7 +17,7 @@ class CreateVerificationCodesTable extends Migration
             $table->increments('id');
             $table->string('mobile')->nullable();
             $table->string('code')->nullable();
-            $table->string('token', 350)->nullable();
+            $table->string('token', 700)->nullable();
             $table->boolean('is_verified')->default(0);
             $table->dateTime('invoked_at')->nullable();
             $table->timestamps();

@@ -42,7 +42,7 @@ class PassportController extends Controller
       'password' => 'required|string|min:6'
     ]);
     $validator4 = Validator::make($data, [
-      'national_code' => 'required|max:3|min:12'
+      'national_code' => 'required|min:3|max:12'
     ]);
     $validator5 = Validator::make($data, [
       'mobile' => 'required|max:11|min:11|unique:users'
@@ -67,7 +67,7 @@ class PassportController extends Controller
     ]);
 
     $vc->invokeToken();
-    $token = $user->createToken($user->email)->accessToken;
+    $token = $user->createToken($user->mobile)->accessToken;
 
     return ws::r(1,['token' => $token , 'user' => $user], Response::HTTP_OK,ms::REGISTER_SUCCESS);
   }
@@ -81,7 +81,7 @@ class PassportController extends Controller
 //    $password = MCrypt::decryptRSA_PRV($request->password);
     if (!Hash::check($password, $user->password)) return ws::r(0, [], 200, ms::LOGIN_PASSWORD_FAIL);
 
-    $token = $user->createToken($request->mobile)->accessToken;
+    $token = $user->createToken($user->mobile)->accessToken;
     if (AdminHelper::isAdmin())  return ws::r(1, ['token' => $token, 'user' => $user, 'is_admin' => 1], Response::HTTP_OK, ms::LOGIN_SUCCESS);
     else return ws::r(1, ['token' => $token, 'user' => $user], Response::HTTP_OK, ms::LOGIN_SUCCESS);
 
