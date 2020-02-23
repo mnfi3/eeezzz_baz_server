@@ -64,7 +64,7 @@ class PassportController extends Controller
       'invite_code' => UserHelper::generateInviteCode()
     ]);
 
-    $vc->invokeToken();
+    $vc->expireToken();
     $vc->delete();
     $token = $user->createToken($user->mobile)->accessToken;
 
@@ -105,6 +105,7 @@ class PassportController extends Controller
 
 
   public function resetPassword(Request $request){
+    $mobile = $request->mobile;
     $vc = VerificationCode::validateToken($request->token);
     if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);
 
@@ -116,7 +117,7 @@ class PassportController extends Controller
     if (strlen($new_password) < 6) return ws::r(0, [], Response::HTTP_OK , ms::CHANGE_PASSWORD_NEW_PASS_ERROR);
 
 
-    $vc->invokeToken();
+    $vc->expireToken();
     $vc->delete();
     $user->password = Hash::make($new_password);
     $user->save();

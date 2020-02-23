@@ -165,29 +165,30 @@ class UserFinanceController extends Controller {
     $finance = $user->finance;
     $settlement = $user->settlements()->where('is_seen', '=', 0)->first();
     if ($settlement != null){
-      return ws::r(0, '', Response::HTTP_OK, ms::SETTLEMENT_REQUEST_DUPLICATE);
+      return ws::r(0, [], Response::HTTP_OK, ms::SETTLEMENT_REQUEST_DUPLICATE);
     }
 
     if ($finance->user_balance < SettlementRequest::MIN_SETTLEMENT_AMOUNT) {
-      return ws::r(0, '', Response::HTTP_OK, ms::SETTLEMENT_MIN_AMOUNT);
+      return ws::r(0, [], Response::HTTP_OK, ms::SETTLEMENT_MIN_AMOUNT);
     }
     $data = $request->toArray();
     $validator = Validator::make($data, [
 //      'bank_shba_number' => 'required|string|max:30|min:10',
-      'bank_account_owner_name' => 'required|string|max:30',
+      'bank_account_owner_name' => 'required|string|max:40|min:4',
     ]);
 
     if ($validator->fails()) {
-      return ws::r(0, '', Response::HTTP_OK, ms::INVALID_DATA);
+      return ws::r(0, [], Response::HTTP_OK, ms::SETTLEMENT_NAME_INVALID);
     }
 
     if(strlen($request->bank_card_number) < 5 && strlen($request->bank_account_number) < 5 && strlen($request->bank_shba_number) < 5){
-      return ws::r(0, '', Response::HTTP_OK, ms::SETTLEMENT_DADA_INVALID);
+      return ws::r(0, [], Response::HTTP_OK, ms::SETTLEMENT_DADA_INVALID);
     }
 
     $settlement = SettlementRequest::create([
       'user_id' => $user->id,
-      'amount' => $finance->user_balance,
+      'first_amount' => $finance->user_balance,
+      'final_amount' => 0,
       'bank_card_number' => $request->bank_card_number,
       'bank_account_number' => $request->bank_account_number,
       'bank_shba_number' => $request->bank_shba_number,
@@ -204,7 +205,7 @@ class UserFinanceController extends Controller {
     $finance->bank_account_owner_name = $request->bank_account_owner_name;
     $finance->save();
 
-    return ws::r(1, '', Response::HTTP_OK, ms::SETTLEMENT_REQUEST_SUCCESS);
+    return ws::r(1, $settlement, Response::HTTP_OK, ms::SETTLEMENT_REQUEST_SUCCESS);
   }
 
 
@@ -214,7 +215,7 @@ class UserFinanceController extends Controller {
     if ($settlement != null){
       return ws::r(1, $settlement, Response::HTTP_OK);
     }else{
-      return ws::r(0, '', Response::HTTP_OK, ms::SETTLEMENT_NOT_EXIST);
+      return ws::r(0, [], Response::HTTP_OK, ms::SETTLEMENT_NOT_EXIST);
     }
   }
 }

@@ -19,7 +19,7 @@ class CreateVerificationCodesTable extends Migration
             $table->string('code')->nullable();
             $table->string('token', 700)->nullable();
             $table->boolean('is_verified')->default(0);
-            $table->dateTime('invoked_at')->nullable();
+            $table->dateTime('expired_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->charset = 'utf8';

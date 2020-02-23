@@ -13,10 +13,10 @@ class VerificationCode extends Model
 {
   use SoftDeletes;
 
-  const CODE_INVOKE_DURATION = 4;//minutes
-  const TOKEN_INVOKE_DURATION = 30;//minutes
+  const CODE_EXPIRE_DURATION = 4;//minutes
+  const TOKEN_EXPIRE_DURATION = 30;//minutes
 
-  protected $fillable = ['mobile', 'code', 'token', 'is_verified', 'invoked_at'];
+  protected $fillable = ['mobile', 'code', 'token', 'is_verified', 'expired_at'];
 
 
 
@@ -28,19 +28,19 @@ class VerificationCode extends Model
     $vc->token = '';
     $vc->is_verified = 0;
     $dateTime = new DateTime(date('Y-m-d H:i:s'));
-    $dateTime->add(new DateInterval('PT' . self::CODE_INVOKE_DURATION . 'M'));
+    $dateTime->add(new DateInterval('PT' . self::CODE_EXPIRE_DURATION . 'M'));
     $time = $dateTime->format('Y-m-d H:i:s');
-    $vc->invoked_at = $time;
+    $vc->expired_at = $time;
     $vc->save();
     return $vc;
   }
 
 
-  public function invokeToken(){
+  public function expireToken(){
     $now = date('Y-m-d H:i:s');
     $obj = json_decode(MCrypt::decrypt($this->token));
-    $obj->token_status = 'invoked';
-    $obj->token_invoked_at =  $now;
+    $obj->token_status = 'expired';
+    $obj->token_expired_at =  $now;
     $this->token = MCrypt::encrypt(json_encode($obj));
     $this->save();
   }
@@ -50,11 +50,11 @@ class VerificationCode extends Model
     if ($vc == null) return null;
 
     $obj = json_decode(MCrypt::decrypt($token));
-    if($obj->token_status == 'invoked')  return null;
+    if($obj->token_status == 'expired')  return null;
 
-    $token_invoked_at = new DateTime($obj->token_invoked_at);
+    $token_expired_at = new DateTime($obj->token_expired_at);
     $now = new DateTime(date('Y-m-d H:i:s'));
-    if ($token_invoked_at < $now) return null;
+    if ($token_expired_at < $now) return null;
 
     return $vc;
   }

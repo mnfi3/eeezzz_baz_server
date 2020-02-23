@@ -12,10 +12,10 @@ class SettlementRequest extends Model
   const MIN_SETTLEMENT_AMOUNT = 20000;
 
   protected $fillable = [
-    'user_id', 'first_amount', 'bank_card_number', 'bank_account_number', 'bank_shba_number', 'bank_account_owner_name', 'is_seen', 'is_confirmed', 'is_paid'
+    'user_id', 'first_amount', 'final_amount', 'bank_card_number', 'bank_account_number', 'bank_shba_number', 'bank_account_owner_name', 'is_seen', 'is_confirmed', 'is_paid'
   ];
 
-  protected $hidden = ['is_seen', 'is_confirmed', 'is_paid'];
+  protected $hidden = [];
 
 
   public function user(){

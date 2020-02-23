@@ -68,6 +68,19 @@ Route::get('/test', function () {
 });
 
 
+Route::get('/test2', function () {
+//  for($i=0; $i<1000;$i++){
+//    \App\VerificationCode::create([
+//      'mobile' => '09145555555',
+//      'code' => '12345',
+//      'token' => 'eyJpdiI6ImczVmYzNkJ3aE9SWTBkblVCekkzbnc9PSIsInZhbHVlIjoiWDJIdForbmVBZXRQeitpY0xJQ2ZDUHNqRWp5ejFXeDFMQ1p2aHpDbmlIdVlCQnd0aDVcL2lwaUdCN2t6R2ZSMkE0ODNLRUJxN1ZwaEtEbkZTaHdzWHpqK213Sk40Nm1ZWmc3cG5zdVZ0S1A3NEhhTUdpOUFBbVF5b2xCOWkzT2xMenJZWWd3b3JpYVh3eEFLbXlJRjV5emdHbVNROWozbDM2VmJDZStGSTZjcmFVWk4ybmJLUWJBRGJGKzJ0SVwvWlEiLCJtYWMiOiJjZDFiNWYxN2EwMGQzZmY1OWU1Zjk3NTkwOGQyNjQ4ODZiZDIyYzc5MzhlODUwYzQwZWUwMzhkZWFiMDM2YzQ3In0=',
+//      'is_verified' => '1',
+//      'invoked_at' => '2020-02-17 11:48:05',
+//    ]);
+//  }
+});
+
+
 
 
 

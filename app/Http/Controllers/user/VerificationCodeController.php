@@ -64,19 +64,19 @@ class VerificationCodeController extends Controller
       $code = $request->code;
       $mobile = $request->mobile;
       $now = date('Y-m-d H:i:s');
-      $vc = VerificationCode::orderBy('id', 'desc')->where('mobile', '=', $mobile)->where('code', '=', $code)->where('is_verified', '=', 0)->where('invoked_at', '>', $now)->first();
+      $vc = VerificationCode::orderBy('id', 'desc')->where('mobile', '=', $mobile)->where('code', '=', $code)->where('is_verified', '=', 0)->where('expired_at', '>', $now)->first();
 
       if ($vc == null) return ws::r(0, [], 200, ms::SMS_VERIFICATION_CODE_INVALID);
 
       $dateTime = new DateTime(date('Y-m-d H:i:s'));
-      $dateTime->add(new DateInterval('PT' . VerificationCode::TOKEN_INVOKE_DURATION . 'M'));
-      $token_invoke_time = $dateTime->format('Y-m-d H:i:s');
+      $dateTime->add(new DateInterval('PT' . VerificationCode::TOKEN_EXPIRE_DURATION . 'M'));
+      $token_expire_time = $dateTime->format('Y-m-d H:i:s');
 
-      $obj = ['token_status' => 'valid', 'token_invoked_at' => $token_invoke_time, 'mobile' => $mobile, 'code' => $code, 'verified_at' => $now];
+      $obj = ['token_status' => 'valid', 'token_expired_at' => $token_expire_time, 'mobile' => $mobile, 'code' => $code, 'verified_at' => $now];
       $vc->token = MCrypt::encrypt(json_encode($obj));
       $vc->is_verified = 1;
       $vc->save();
 
-      return ws::r(0, ['verification_code' => $vc], 200, ms::SMS_VERIFICATION_CODE_VALIDATION_SUCCESS);
+      return ws::r(1, ['verification_code' => $vc], 200, ms::SMS_VERIFICATION_CODE_VALIDATION_SUCCESS);
     }
 }

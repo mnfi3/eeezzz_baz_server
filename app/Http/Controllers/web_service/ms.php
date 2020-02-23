@@ -71,6 +71,7 @@ class ms {
   const SETTLEMENT_REQUEST_DUPLICATE = 'شما قبلا درخواست تسویه حساب داده اید.لطفا شکیبا باشید تا درخواست شما بررسی شود';
   const SETTLEMENT_NOT_EXIST = 'هیچ درخواست تسویه ای وجود ندارد';
   const SETTLEMENT_DADA_INVALID = 'اطلاعات ارسالی برای تسویه حساب اشتباه است';
+  const SETTLEMENT_NAME_INVALID = 'لطفا نام دارنده حساب را با دقت وارد کنید';
 
 
   //product
@@ -103,7 +104,7 @@ class ms {
   const SMS_MOBILE_INVALID = 'شماره تلفن وارد شده اشتباه است';
   const SMS_MOBILE_USER_NOT_FOUND = 'کاربری با این شماره یافت نشد';
   const SMS_REGISTER_MOBILE_DUPLICATE = 'این شماره تلفن از قبل در سیستم ثبت شده است';
-  const SMS_VERIFICATION_CODE_INVALID = 'کد فعالسازی وارد شده اشتباه است';
+  const SMS_VERIFICATION_CODE_INVALID = 'کد فعالسازی وارد شده اشتباه و یا منقضی شده است';
   const SMS_VERIFICATION_CODE_VALIDATION_SUCCESS = 'شماره موبایل تایید شد';
 
 
