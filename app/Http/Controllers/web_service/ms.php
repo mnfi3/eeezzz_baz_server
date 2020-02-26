@@ -94,6 +94,11 @@ class ms {
   const FCM_RENT_GAME_FAIL_TITLE = ' اجاره ناموفق';
   const FCM_RENT_GAME_FAIL_BODY = 'عملیات اجاره بازی انجام نشد';
 
+  const FCM_EXTEND_RENT_GAME_SUCCESS_TITLE = 'تمدید کرایه';
+  const FCM_EXTEND_RENT_GAME_SUCCESS_BODY = 'عملیات تمدید کرایه بازی با موفقیت انجام شد';
+  const FCM_EXTEND_RENT_GAME_FAIL_TITLE = ' تمدید کرایه ناموفق';
+  const FCM_EXTEND_RENT_GAME_FAIL_BODY = 'عملیات تمدید کرایه بازی انجام نشد';
+
 
   //address
   const NOT_EXIST_ADDRESS_FOR_USER = 'هیچ آدرسی برای این کاربر ثبت نشده است';
@@ -112,14 +117,8 @@ class ms {
 
 
 
-
-
-
-
-
-
-
-
+  //extend rent messages
+  const EXTEND_RENT_NOT_FOR_THIS_USER = 'این محصول در لیست اجاره های شما قرار ندارد';
 
 
   //admin panel messages

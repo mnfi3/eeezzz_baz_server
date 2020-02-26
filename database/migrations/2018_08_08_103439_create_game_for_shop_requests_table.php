@@ -19,7 +19,7 @@ class CreateGameForShopRequestsTable extends Migration
           $table->foreign('user_id')->references('id')->on('users');
           $table->integer('game_for_shop_id')->unsigned();
           $table->foreign('game_for_shop_id')->references('id')->on('game_for_shops');
-          $table->boolean('is_success');
+          $table->boolean('is_delivered');
           $table->boolean('is_finish');
           $table->timestamps();
           $table->softDeletes();

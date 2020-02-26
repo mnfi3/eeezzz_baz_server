@@ -177,27 +177,28 @@ class GameForShopController extends Controller {
     $game->count = $game->count - 1;
     $game->save();
 
-    $paymentable_id = $game_id;
+
+    $shop_request = new GameForShopRequest();
+    $shop_request->user_id = $user->id;
+    $shop_request->game_for_shop_id = $game_id;
+    $shop_request->address_id = $address_id;
+    $shop_request->game_price = $game->price;
+    $shop_request->is_sent = 0;
+    $shop_request->is_delivered = 0;
+    $shop_request->is_finish = 0;
+    $shop_request->save();
+
+
+
     $payment = new UserPayment();
     $payment->user_id = $user->id;
-    $payment->paymentable_id = $paymentable_id;
-    $payment->paymentable_type = 'App\GameForShop';
+    $payment->paymentable_id = $shop_request->id;
+    $payment->paymentable_type = 'App\GameForShopRequest';
     $payment->amount = $game->price;
     $payment->is_success = 1;
     $payment->bank_receipt = 'shop' . $game_id . 'u' . $user->id;
     $payment->bank_name = 'wallet';
     $payment->save();
-
-    $request = new GameForShopRequest();
-    $request->user_id = $user->id;
-    $request->game_for_shop_id = $game_id;
-    $request->address_id = $address_id;
-    $request->game_price = $game->price;
-    $request->is_sent = 0;
-    $request->is_success = 0;
-    $request->is_finish = 0;
-    $request->save();
-
 
     FcmNotification::sendNotificationToUser($user, ms::FCM_SHOP_GAME_SUCCESS_TITLE, ms::FCM_SHOP_GAME_SUCCESS_BODY);
 //        return redirect('/');
@@ -272,16 +273,7 @@ class GameForShopController extends Controller {
       $game->count = $game->count - 1;
       $game->save();
 
-      $paymentable_id = $game_id;
-      $payment = new UserPayment();
-      $payment->user_id = $user_id;
-      $payment->paymentable_id = $paymentable_id;
-      $payment->paymentable_type = 'App\GameForShop';
-      $payment->amount = $price;
-      $payment->is_success = 1;
-      $payment->bank_receipt = $RefID;
-      $payment->bank_name = 'zarinpal';
-      $payment->save();
+
 
       $request = new GameForShopRequest();
       $request->user_id = $user_id;
@@ -289,9 +281,19 @@ class GameForShopController extends Controller {
       $request->address_id = $address_id;
       $request->game_price = $price;
       $request->is_sent = 0;
-      $request->is_success = 0;
+      $request->is_delivered = 0;
       $request->is_finish = 0;
       $request->save();
+
+      $payment = new UserPayment();
+      $payment->user_id = $user_id;
+      $payment->paymentable_id = $request->id;
+      $payment->paymentable_type = 'App\GameForShopRequest';
+      $payment->amount = $price;
+      $payment->is_success = 1;
+      $payment->bank_receipt = $RefID;
+      $payment->bank_name = 'zarinpal';
+      $payment->save();
 
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_SHOP_GAME_SUCCESS_TITLE, ms::FCM_SHOP_GAME_SUCCESS_BODY);
@@ -302,7 +304,7 @@ class GameForShopController extends Controller {
     } else {
       $payment = new UserPayment();
       $payment->user_id = $user_id;
-      $payment->paymentable_id = 0;
+      $payment->paymentable_id = $game_id;
       $payment->paymentable_type = 'App\GameForShop';
       $payment->amount = $price;
       $payment->is_success = 0;

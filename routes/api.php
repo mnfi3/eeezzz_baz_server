@@ -104,6 +104,9 @@ Route::post('/rent-game', 'user\GameForRentController@rentGame')->name('rent-gam
 Route::get('/rent-game-after-pay/{request_id}/{user_id}/{game_id}/{game_price}/{sum_price}/{rent_type_id}/{rent_price}/{address_id}', 'user\GameForRentController@rentGameAfterPay')->name('rent-game-after-pay');
 Route::post('/rent-game-with-wallet', 'user\GameForRentController@rentGameWithWallet');
 
+//extend rent
+Route::post('/extend-rent', 'user\GameForRentController@extendRent')->name('extend-rent');
+Route::get('/extend-rent-after-pay/{request_id}/{user_id}/{game_for_rent_request_id}/{extended_price}/{rent_type_id}', 'user\GameForRentController@extendRentAfterPay')->name('extend-rent-after-pay');
 //-------------------------------------------------------------------------
 
 //verification code

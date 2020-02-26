@@ -4,15 +4,7 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 
-use App\GameForRent;
-use App\GameForRentRequest;
-use App\Http\Controllers\helpers\AdminHelper;
-use App\Http\Controllers\helpers\UserHelper;
-use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
-use App\RentType;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 

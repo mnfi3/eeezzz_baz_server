@@ -9,7 +9,7 @@ class GameForShopRequest extends Model
 {
     use SoftDeletes;
 
-  protected $fillable = ['user_id', 'game_for_shop_id', 'address_id', 'game_price', 'is_sent', 'is_success', 'is_finish'];
+  protected $fillable = ['user_id', 'game_for_shop_id', 'address_id', 'game_price', 'is_sent', 'is_delivered', 'is_finish'];
 
 
   public function user(){

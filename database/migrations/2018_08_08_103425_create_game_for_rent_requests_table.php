@@ -22,9 +22,9 @@ class CreateGameForRentRequestsTable extends Migration
           $table->integer('rent_type_id')->unsigned();
           $table->foreign('rent_type_id')->references('id')->on('rent_types');
           $table->integer('rent_price');
-          $table->boolean('is_success');
-          $table->boolean('is_finish');
           $table->boolean('is_delivered');
+          $table->boolean('is_finish');
+          $table->boolean('is_returned');
           $table->timestamps();
           $table->softDeletes();
           $table->charset = 'utf8';
