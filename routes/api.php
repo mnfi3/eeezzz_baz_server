@@ -79,7 +79,7 @@ Route::get('game-info-photos/{id}', 'user\GameInfoController@photos');
 
 
 Route::post('global-search', 'site_public\SiteController@globalSearch');
-Route::post('post-search', 'user\PostController@search');
+Route::post('post-search', 'site_public\PostController@search');
 
 
 Route::get('rent-type', 'user\RentTypeController@index');
@@ -92,21 +92,23 @@ Route::post('refresh-fcm-token', 'fcm\DeviceController@refresh');
 //******************************payment tasks****************************//
 //finance
 Route::post('increase-credit', 'user\UserFinanceController@increaseCredit')->name('increase-credit');
-Route::get('increase-credit-after-pay/{request_id}/{user_id}/{amount}', 'user\UserFinanceController@increaseCreditAfterPay')->name('increase-credit-after-pay');
+Route::get('increase-credit-after-pay/{request_id}', 'user\UserFinanceController@increaseCreditAfterPay')->name('increase-credit-after-pay');
 
 //shop game
 Route::post('/shop-game', 'user\GameForShopController@shopGame')->name('shop-game');
-Route::get('/shop-game-after-pay/{request_id}/{user_id}/{game_id}/{price}/{address_id}', 'user\GameForShopController@shopGameAfterPay')->name('shop-game-after-pay');
+Route::get('/shop-game-after-pay/{request_id}', 'user\GameForShopController@shopGameAfterPay')->name('shop-game-after-pay');
 Route::post('/shop-game-with-wallet', 'user\GameForShopController@shopGameWithWallet');
 
 //rent game
 Route::post('/rent-game', 'user\GameForRentController@rentGame')->name('rent-game');
-Route::get('/rent-game-after-pay/{request_id}/{user_id}/{game_id}/{game_price}/{sum_price}/{rent_type_id}/{rent_price}/{address_id}', 'user\GameForRentController@rentGameAfterPay')->name('rent-game-after-pay');
+Route::get('/rent-game-after-pay/{request_id}', 'user\GameForRentController@rentGameAfterPay')->name('rent-game-after-pay');
 Route::post('/rent-game-with-wallet', 'user\GameForRentController@rentGameWithWallet');
 
 //extend rent
+Route::post('/rent-penalty', 'user\GameForRentController@rentPenalty')->name('rent-penalty');
 Route::post('/extend-rent', 'user\GameForRentController@extendRent')->name('extend-rent');
-Route::get('/extend-rent-after-pay/{request_id}/{user_id}/{game_for_rent_request_id}/{extended_price}/{rent_type_id}', 'user\GameForRentController@extendRentAfterPay')->name('extend-rent-after-pay');
+Route::get('/extend-rent-after-pay/{request_id}', 'user\GameForRentController@extendRentAfterPay')->name('extend-rent-after-pay');
+Route::post('/extend-rent-with-wallet', 'user\GameForRentController@extendRentWithWallet')->name('extend-rent-with-wallet');
 //-------------------------------------------------------------------------
 
 //verification code

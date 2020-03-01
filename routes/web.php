@@ -70,22 +70,19 @@ Route::get('/test', function () {
 
 
 Route::get('/test2', function () {
-  $data = [
-    'game_id' => 1,
-    'game_price' => 2,
-    'sum_price' => 3,
-    'rent_type_id' => 'mohsen',
-    'rent_price' => 'farjami',
-    'address_id' => 6
-  ];
+  $datetime1 = date_create('2020-03-1 15:20:38');
+  $datetime2 = date_create('2020-03-1 15:00:00');
+  $interval = date_diff($datetime1, $datetime2);
+//  echo $interval;
+  $a = $interval->format('%R%a');
+  echo $a . '<br>';
 
-  $data = json_encode($data);
 
-  $data = json_decode($data, true);
-  extract($data);
-//  echo $data->rent_type_id;
-  echo $rent_type_id;
-//  return $data;
+//  $finished_at = new DateTime('2020-03-2 15:20:38');
+//  $now = new DateTime('now');
+//  $interval = date_diff($now, $finished_at);
+//  $diff = $interval->format('%R%a');
+//  echo $diff;
 });
 
 
