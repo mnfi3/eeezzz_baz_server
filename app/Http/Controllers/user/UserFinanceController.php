@@ -22,7 +22,7 @@ use App\Http\Controllers\site_public\Zarinpal;
 class UserFinanceController extends Controller {
 
   public function __construct() {
-    $this->middleware('auth:api');
+    $this->middleware('auth:api', ['except' => ['increaseCreditAfterPay']]);
   }
 
 
@@ -52,27 +52,17 @@ class UserFinanceController extends Controller {
       return ws::r(0, '', Response::HTTP_OK, ms::AMOUNT_TOO_LOW);
     }
 
-    return $this->increaseCreditPay($user->id, $amount);
-
-//      $pay_url = env('APP_URL') .'increase-credit-pay/' .  $user->id .'/'.  (int)$amount;
-//      $pay_url = route('increase-credit') . '-pay' .'/'.  Crypt::encryptString($user->id) .'/'.  Crypt::encryptString((int)$amount);
-//      return ws::r(1, $pay_url);
-  }
-
-
-  public function increaseCreditPay($user_id, $amount) {
-//      $user_id = Crypt::decryptString($user_id);
-//      $amount = Crypt::decryptString($amount);
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $req = ZarinpalPayRequest::create(['authority' => '']);
+    $req = ZarinpalPayRequest::create([
+      'user_id' => $user->id,
+      'authority' => '',
+      'type' => 'credit',
+      'amount' => $amount,
+      'data' => '',
+      ]);
 
     json_encode($answer = $zarinpal->request(
-      route('increase-credit-after-pay',
-        [
-          'request_id' => $req->id,
-          'user_id' => Crypt::encryptString($user_id),
-          'amount' => Crypt::encryptString($amount)
-        ]),
+      route('increase-credit-after-pay',['request_id' => $req->id]),
       $amount,
       'increase balance'
     ));
@@ -88,22 +78,30 @@ class UserFinanceController extends Controller {
   }
 
 
-  public function increaseCreditAfterPay($request_id, $user_id, $amount) {
-    $user_id = Crypt::decryptString($user_id);
-    $amount = Crypt::decryptString($amount);
+
+
+
+  public function increaseCreditAfterPay($request_id) {
+    $z_request = ZarinpalPayRequest::find($request_id);
+    if ($z_request->is_verified == 1) return redirect('/');
+    $z_request->is_verified = 1;
+    $authority = $z_request->authority;
+
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $authority = ZarinpalPayRequest::find($request_id)->authority;
-    $result = ($zarinpal->verify('OK', $amount, $authority));
+    $result = ($zarinpal->verify('OK', $z_request->amount, $authority));
     //echo json_encode($result);
     $status = $result['Status'];
 
-    $user = User::find($user_id);
+    $user = User::find($z_request->user_id);
     if ($status == 'success') {
       $RefID = $result['RefID'];
 
+      $z_request->is_success = 1;
+      $z_request->save();
+
       $finance = $user->finance;
       if ($finance !== null) {
-        $finance->user_balance = $finance->user_balance + $amount;
+        $finance->user_balance = $finance->user_balance + $z_request->amount;
         $finance->save();
       } else {
         $finance = new UserFinance();
@@ -112,39 +110,33 @@ class UserFinanceController extends Controller {
         $finance->bank_account_number = '';
         $finance->bank_shba_number = '';
         $finance->bank_account_owner_name = '';
-        $finance->user_balance = $amount;
+        $finance->user_balance = $z_request->amount;
         $finance->save();
       }
 
       $paymentable_id = $finance->id;
-
       $payment = new UserPayment();
-      $payment->user_id = $user_id;
+      $payment->user_id = $user->id;
       $payment->paymentable_id = $paymentable_id;
       $payment->paymentable_type = 'App\UserFinance';
-      $payment->amount = $amount;
+      $payment->amount = $z_request->amount;
       $payment->is_success = 1;
       $payment->bank_receipt = $RefID;
       $payment->bank_name = 'zarinpal';
       $payment->save();
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_INCREASE_CREDIT_SUCCESS_TITLE, ms::FCM_INCREASE_CREDIT_SUCCESS_BODY);
-
-//        return redirect('/');
-      return ws::r(1, '', Response::HTTP_OK, ms::PAYMENT_SUCCESS);
-
-
+      return ws::r(1, [], Response::HTTP_OK, ms::PAYMENT_SUCCESS);
     } else {
+      $z_request->is_success = 0;
+      $z_request->save();
 
-//        $RefID = $result['RefID'];
-//        if($RefID === null){
-//          $RefID = '';
-//        }
+
       $payment = new UserPayment();
-      $payment->user_id = $user_id;
+      $payment->user_id = $user->id;
       $payment->paymentable_id = 0;
       $payment->paymentable_type = 'App\UserFinance';
-      $payment->amount = $amount;
+      $payment->amount = $z_request->amount;
       $payment->is_success = 0;
       $payment->bank_receipt = '';
       $payment->bank_name = 'zarinpal';

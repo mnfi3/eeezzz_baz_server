@@ -32,7 +32,7 @@ use Zarinpal\Drivers\SoapDriver;
 class GameForRentController extends Controller {
 
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['index', 'show', 'related', 'search', 'getRentCost', 'rentGamePay', 'rentGameAfterPay']]);
+    $this->middleware('auth:api', ['except' => ['index', 'show', 'related', 'search', 'getRentCost', 'rentGameAfterPay']]);
   }
 
 
@@ -228,49 +228,39 @@ class GameForRentController extends Controller {
 
   public function rentGame(Request $request) {
     $user = Auth::user();
-    $game_id = $request->game_id;
     $address_id = $request->address_id;
-    $rent_type_id = $request->rent_type_id;
-    $game = GameForRent::find($game_id);
+    $rent_type = RentType::find($request->rent_type_id);
+    $game = GameForRent::find($request->game_id);
     if ($game->count < 1) {
       return ws::r(0, '', Response::HTTP_OK, ms::NOT_EXIST_PRRODUCT);
     }
-
-
-    return $this->rentGamePay($user->id, $game_id, $rent_type_id, $address_id);
-
-//    $pay_url = route('rent-game') . '-pay' .'/'.  Crypt::encryptString($user->id) .'/'.  Crypt::encryptString((int)$game->id) . '/' . $rent_type_id.'/' . $address_id;
-//    return ws::r(1, $pay_url);
-  }
-
-
-  public function rentGamePay($user_id, $game_id, $rent_type_id, $address_id) {
-//    $user_id = Crypt::decryptString($user_id);
-//    $game_id = Crypt::decryptString($game_id);
-    $game = GameForRent::find($game_id);
-    if ($game->count < 1) {
-      return ws::r(0, '', Response::HTTP_OK, ms::NOT_EXIST_PRRODUCT);
-    }
-
-    $rent_type = RentType::find($rent_type_id);
 
     $rent_price = (int)((($game->price) * ($rent_type->price_percent)) / 100);
     $game_price = $game->price;
     $sum_price = $game_price + $rent_price;
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $req = ZarinpalPayRequest::create(['authority' => '']);
+
+    $data =json_encode([
+      'game_id' => $game->id,
+      'game_price' => $game_price,
+      'sum_price' => $sum_price,
+      'rent_type_id' => $rent_type->id,
+      'rent_price' => $rent_price,
+      'address_id' => $address_id
+    ]);
+
+    $req = ZarinpalPayRequest::create([
+      'user_id' => $user->id,
+      'authority' => '',
+      'type' => 'rent',
+      'amount' => $sum_price,
+      'data' => $data,
+    ]);
+
+
+
     json_encode($answer = $zarinpal->request(
-      route('rent-game-after-pay',
-        [
-          'request_id' => $req->id,
-          'user_id' => Crypt::encryptString($user_id),
-          'game_id' => Crypt::encryptString($game_id),
-          'game_price' => $game_price,
-          'sum_price' => $sum_price,
-          'rent_type_id' => $rent_type_id,
-          'rent_price' => $rent_price,
-          'address_id' => $address_id
-        ]),
+      route('rent-game-after-pay', ['request_id' => $req->id]),
       $sum_price,
       'rent game'
     ));
@@ -280,39 +270,45 @@ class GameForRentController extends Controller {
       $req->save();
       $payment_url = $zarinpal->getStartPayAddress() . $answer['Authority'];
       return ws::r(1, $payment_url);
-//      return redirect($zarinpal->getStartPayAddress() . $answer['Authority']);
     }
   }
 
 
-  public function rentGameAfterPay($request_id, $user_id, $game_id, $game_price, $sum_price, $rent_type_id, $rent_price, $address_id) {
-    $user_id = Crypt::decryptString($user_id);
-    $game_id = Crypt::decryptString($game_id);
-    $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $authority = ZarinpalPayRequest::find($request_id)->authority;
-    $result = ($zarinpal->verify('OK', $sum_price, $authority));
-    //echo json_encode($result);
-    $status = $result['Status'];
 
-    $user = User::find($user_id);
+
+
+  public function rentGameAfterPay($request_id) {
+    $z_request = ZarinpalPayRequest::find($request_id);
+    if ($z_request->is_verified == 1) return redirect('/');
+    $z_request->is_verified = 1;
+    $authority = $z_request->authority;
+    $data = json_decode($z_request->data);
+
+    $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
+    $result = ($zarinpal->verify('OK', $z_request->amount, $authority));
+    $status = $result['Status'];
+    $user = User::find($z_request->user_id);
 
     if ($status == 'success') {
       $RefID = $result['RefID'];
 
-      $game = GameForRent::find($game_id);
+      $z_request->is_success = 1;
+      $z_request->save();
+
+      $game = GameForRent::find($data->game_id);
       $game->count = $game->count - 1;
       $game->save();
 
 
 
-      $rent_type = RentType::find($rent_type_id);
+      $rent_type = RentType::find($data->rent_type_id);
       $request = new GameForRentRequest();
-      $request->user_id = $user_id;
-      $request->game_for_rent_id = $game_id;
-      $request->rent_type_id = $rent_type_id;
-      $request->address_id = $address_id;
-      $request->game_price = $game_price;
-      $request->rent_price = $rent_price;
+      $request->user_id = $user->id;
+      $request->game_for_rent_id = $data->game_id;
+      $request->rent_type_id = $data->rent_type_id;
+      $request->address_id = $data->address_id;
+      $request->game_price = $data->game_price;
+      $request->rent_price = $data->rent_price;
       $request->is_sent = 0;
       $request->is_delivered = 0;
       $request->is_finish = 0;
@@ -321,10 +317,10 @@ class GameForRentController extends Controller {
       $request->save();
 
       $payment = new UserPayment();
-      $payment->user_id = $user_id;
+      $payment->user_id = $user->id;
       $payment->paymentable_id = $request->id;
       $payment->paymentable_type = 'App\GameForRentRequest';
-      $payment->amount = $sum_price;
+      $payment->amount = $data->sum_price;
       $payment->is_success = 1;
       $payment->bank_receipt = $RefID;
       $payment->bank_name = 'zarinpal';
@@ -339,11 +335,14 @@ class GameForRentController extends Controller {
 
 
     } else {
+      $z_request->is_success = 0;
+      $z_request->save();
+
       $payment = new UserPayment();
-      $payment->user_id = $user_id;
-      $payment->paymentable_id = $game_id;
+      $payment->user_id = $user->id;
+      $payment->paymentable_id = $data->game_id;
       $payment->paymentable_type = 'App\GameForRent';
-      $payment->amount = $sum_price;
+      $payment->amount = $data->sum_price;
       $payment->is_success = 0;
       $payment->bank_receipt = '';
       $payment->bank_name = 'zarinpal';
@@ -423,16 +422,23 @@ class GameForRentController extends Controller {
     $user = Auth::user();
 
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $req = ZarinpalPayRequest::create(['authority' => '']);
+
+    $data =json_encode([
+      'game_for_rent_request_id' => $game_for_rent_request->id,
+      'extend_price' => $extend_cost,
+      'rent_type_id' => $rent_type->id
+    ]);
+
+    $req = ZarinpalPayRequest::create([
+      'user_id' => $user->id,
+      'authority' => '',
+      'type' => 'extend_rent',
+      'amount' => $extend_cost,
+      'data' => $data,
+    ]);
+
     json_encode($answer = $zarinpal->request(
-      route('extend-rent-after-pay',
-        [
-          'request_id' => $req->id,
-          'user_id' => Crypt::encryptString($user->id),
-          'game_for_rent_request_id' => Crypt::encryptString($game_for_rent_request->id),
-          'extend_price' => $extend_cost,
-          'rent_type_id' => $rent_type->id,
-        ]),
+      route('extend-rent-after-pay', ['request_id' => $req->id]),
       $extend_cost,
       'extend rent'
     ));
@@ -450,16 +456,16 @@ class GameForRentController extends Controller {
   }
 
 
-  public function extendRentAfterPay($request_id, $user_id, $game_for_rent_request_id, $extend_price, $rent_type_id){
-    $user_id = Crypt::decryptString($user_id);
-    $rent_request_id = Crypt::decryptString($game_for_rent_request_id);
+  public function extendRentAfterPay($request_id){
+    $z_request = ZarinpalPayRequest::find($request_id);
+    $authority = $z_request->authority;
+    $data = json_decode($z_request->data);
+    $user = User::find($z_request->user_id);
+    $rent_request_id = $data->game_for_rent_request_id;
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $authority = ZarinpalPayRequest::find($request_id)->authority;
-    $result = ($zarinpal->verify('OK', $extend_price, $authority));
-    //echo json_encode($result);
+    $result = ($zarinpal->verify('OK', $z_request->amount, $authority));
     $status = $result['Status'];
 
-    $user = User::find($user_id);
 
     if ($status == 'success') {
       $RefID = $result['RefID'];

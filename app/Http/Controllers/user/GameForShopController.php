@@ -28,7 +28,7 @@ use Zarinpal\Drivers\SoapDriver;
 class GameForShopController extends Controller {
 
   public function __construct() {
-    $this->middleware('auth:api', ['except' => ['index', 'show', 'related', 'search', 'shopGamePay', 'shopGameAfterPay']]);
+    $this->middleware('auth:api', ['except' => ['index', 'show', 'related', 'search', 'shopGameAfterPay']]);
   }
 
 
@@ -39,10 +39,6 @@ class GameForShopController extends Controller {
       $game->gameInfo->videos;
       $game->gameInfo->genres;
       $game->gameInfo->console;
-      if (AdminHelper::isAdmin()) {
-        $game->user->addresses;
-        $game->reports;
-      }
     }
 
     return ws::r(1, $games, Response::HTTP_OK, '');
@@ -217,33 +213,28 @@ class GameForShopController extends Controller {
       return ws::r(0, '', Response::HTTP_OK, ms::NOT_EXIST_PRRODUCT);
     }
 
-    return $this->shopGamePay($user->id, $game_id, $address_id);
-
-//    $pay_url = route('shop-game') . '-pay' .'/'.  Crypt::encryptString($user->id) .'/'.  Crypt::encryptString((int)$game->id) . '/' . $address_id;
-//    return ws::r(1, $pay_url);
-  }
-
-
-  public function shopGamePay($user_id, $game_id, $address_id) {
-//    $user_id = Crypt::decryptString($user_id);
-//    $game_id = Crypt::decryptString($game_id);
     $game = GameForShop::find($game_id);
     if ($game->count < 1) {
       return ws::r(0, '', Response::HTTP_OK, ms::NOT_EXIST_PRRODUCT);
     }
     $price = $game->price;
+
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $req = ZarinpalPayRequest::create(['authority' => '']);
+    $data = json_encode([
+      'game_id' => $game_id,
+      'price' => $price,
+      'address_id' => $address_id,
+    ]);
+    $req = ZarinpalPayRequest::create([
+      'user_id' => $user->id,
+      'authority' => '',
+      'type' => 'shop',
+      'amount' => $price,
+      'data' => $data,
+    ]);
 
     json_encode($answer = $zarinpal->request(
-      route('shop-game-after-pay',
-        [
-          'request_id' => $req->id,
-          'user_id' => Crypt::encryptString($user_id),
-          'game_id' => Crypt::encryptString($game_id),
-          'price' => $price,
-          'address_id' => $address_id
-        ]),
+      route('shop-game-after-pay',['request_id' => $req->id,]),
       $price, 'buy game'));
     if (isset($answer['Authority'])) {
       $req->authority = $answer['Authority'];
@@ -253,43 +244,55 @@ class GameForShopController extends Controller {
       return ws::r(1, $payment_url);
 //      return redirect($zarinpal->getStartPayAddress() . $answer['Authority']);
     }
+
+//    $pay_url = route('shop-game') . '-pay' .'/'.  Crypt::encryptString($user->id) .'/'.  Crypt::encryptString((int)$game->id) . '/' . $address_id;
+//    return ws::r(1, $pay_url);
   }
 
 
-  public function shopGameAfterPay($request_id, $user_id, $game_id, $price, $address_id) {
-    $user_id = Crypt::decryptString($user_id);
-    $game_id = Crypt::decryptString($game_id);
+
+
+
+  public function shopGameAfterPay($request_id) {
+    $z_request = ZarinpalPayRequest::find($request_id);
+    if ($z_request->is_verified == 1) return redirect('/');
+    $z_request->is_verified = 1;
+    $authority = $z_request->authority;
+    $data = json_decode($z_request->data);
+
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
-    $authority = ZarinpalPayRequest::find($request_id)->authority;
-    $result = ($zarinpal->verify('OK', $price, $authority));
+    $result = ($zarinpal->verify('OK', $z_request->amount, $authority));
     //echo json_encode($result);
     $status = $result['Status'];
-    $user = User::find($user_id);
+    $user = User::find($z_request->user_id);
 
     if ($status == 'success') {
       $RefID = $result['RefID'];
 
-      $game = GameForShop::find($game_id);
+      $z_request->is_success = 1;
+      $z_request->save();
+
+      $game = GameForShop::find($data->game_id);
       $game->count = $game->count - 1;
       $game->save();
 
 
 
       $request = new GameForShopRequest();
-      $request->user_id = $user_id;
-      $request->game_for_shop_id = $game_id;
-      $request->address_id = $address_id;
-      $request->game_price = $price;
+      $request->user_id = $user->id;
+      $request->game_for_shop_id = $data->game_id;
+      $request->address_id = $data->address_id;
+      $request->game_price = $z_request->price;
       $request->is_sent = 0;
       $request->is_delivered = 0;
       $request->is_finish = 0;
       $request->save();
 
       $payment = new UserPayment();
-      $payment->user_id = $user_id;
+      $payment->user_id = $user->id;
       $payment->paymentable_id = $request->id;
       $payment->paymentable_type = 'App\GameForShopRequest';
-      $payment->amount = $price;
+      $payment->amount = $z_request->amount;
       $payment->is_success = 1;
       $payment->bank_receipt = $RefID;
       $payment->bank_name = 'zarinpal';
@@ -302,11 +305,14 @@ class GameForShopController extends Controller {
 
 
     } else {
+      $z_request->is_success = 0;
+      $z_request->save();
+
       $payment = new UserPayment();
-      $payment->user_id = $user_id;
-      $payment->paymentable_id = $game_id;
+      $payment->user_id = $user->id;
+      $payment->paymentable_id = $data->game_id;
       $payment->paymentable_type = 'App\GameForShop';
-      $payment->amount = $price;
+      $payment->amount = $z_request->amount;
       $payment->is_success = 0;
       $payment->bank_receipt = '';
       $payment->bank_name = 'zarinpal';
