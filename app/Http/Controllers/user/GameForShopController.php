@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\user;
 
+use App\Discount;
 use App\GameForShopRequest;
 use App\GameInfo;
 use App\Http\Controllers\Controller;
@@ -148,6 +149,7 @@ class GameForShopController extends Controller {
   public function shopGameWithWallet(Request $request) {
     $game_id = $request->game_id;
     $address_id = $request->address_id;
+    $discount_code = $request->discount_code;
 
     $game = GameForShop::find($game_id);
 
@@ -162,12 +164,20 @@ class GameForShopController extends Controller {
       return ws::r(0, '', Response::HTTP_OK, ms::BALANCE_NOT_ENOUGH);
     }
 
-    if ($game->price > $user_finance->user_balance) {
+    $price = $game->price;
+    $discount = Discount::validateCode($discount_code);
+    $discount_id = 0;
+    if ($discount != null){
+      $price = $price - (($price * $discount->percent)/100);
+      $discount_id = $discount->id;
+    }
+
+    if ($price > $user_finance->user_balance) {
       return ws::r(0, '', Response::HTTP_OK, ms::BALANCE_NOT_ENOUGH);
     }
 
 
-    $user_finance->user_balance = $user_finance->user_balance - $game->price;
+    $user_finance->user_balance = $user_finance->user_balance - $price;
     $user_finance->save();
 
     $game->count = $game->count - 1;
@@ -178,7 +188,8 @@ class GameForShopController extends Controller {
     $shop_request->user_id = $user->id;
     $shop_request->game_for_shop_id = $game_id;
     $shop_request->address_id = $address_id;
-    $shop_request->game_price = $game->price;
+    $shop_request->discount_id = $discount_id;
+    $shop_request->game_price = $price;
     $shop_request->is_sent = 0;
     $shop_request->is_delivered = 0;
     $shop_request->is_finish = 0;
@@ -190,11 +201,16 @@ class GameForShopController extends Controller {
     $payment->user_id = $user->id;
     $payment->paymentable_id = $shop_request->id;
     $payment->paymentable_type = 'App\GameForShopRequest';
-    $payment->amount = $game->price;
+    $payment->amount = $price;
     $payment->is_success = 1;
     $payment->bank_receipt = 'shop' . $game_id . 'u' . $user->id;
     $payment->bank_name = 'wallet';
     $payment->save();
+
+    if ($discount != null){
+      $discount->remaining = $discount->remaining - 1;
+      $discount->save();
+    }
 
     FcmNotification::sendNotificationToUser($user, ms::FCM_SHOP_GAME_SUCCESS_TITLE, ms::FCM_SHOP_GAME_SUCCESS_BODY);
 //        return redirect('/');
@@ -208,6 +224,8 @@ class GameForShopController extends Controller {
     $user = Auth::user();
     $game_id = $request->game_id;
     $address_id = $request->address_id;
+    $discount_code = $request->discount_code;
+
     $game = GameForShop::find($game_id);
     if ($game->count < 1) {
       return ws::r(0, '', Response::HTTP_OK, ms::NOT_EXIST_PRRODUCT);
@@ -218,13 +236,21 @@ class GameForShopController extends Controller {
       return ws::r(0, '', Response::HTTP_OK, ms::NOT_EXIST_PRRODUCT);
     }
     $price = $game->price;
+    $discount = Discount::validateCode($discount_code);
+    $discount_id = 0;
+    if ($discount != null){
+      $price = $price - (($price * $discount->percent)/100);
+      $discount_id = $discount->id;
+    }
 
-    $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
+
     $data = json_encode([
       'game_id' => $game_id,
       'price' => $price,
       'address_id' => $address_id,
+      'discount_id' => $discount_id,
     ]);
+
     $req = ZarinpalPayRequest::create([
       'user_id' => $user->id,
       'authority' => '',
@@ -233,6 +259,7 @@ class GameForShopController extends Controller {
       'data' => $data,
     ]);
 
+    $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
     json_encode($answer = $zarinpal->request(
       route('shop-game-after-pay',['request_id' => $req->id,]),
       $price, 'buy game'));
@@ -282,6 +309,7 @@ class GameForShopController extends Controller {
       $request->user_id = $user->id;
       $request->game_for_shop_id = $data->game_id;
       $request->address_id = $data->address_id;
+      $request->discount_id = $data->discount_id;
       $request->game_price = $z_request->price;
       $request->is_sent = 0;
       $request->is_delivered = 0;
@@ -298,10 +326,16 @@ class GameForShopController extends Controller {
       $payment->bank_name = 'zarinpal';
       $payment->save();
 
+      if ($data->discount_id != 0){
+        $discount = Discount::find($data->discount_id);
+        $discount->remaining = $discount->remaining - 1;
+        $discount->save();
+      }
+
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_SHOP_GAME_SUCCESS_TITLE, ms::FCM_SHOP_GAME_SUCCESS_BODY);
 //        return redirect('/');
-      return ws::r(1, '', Response::HTTP_OK, ms::PAYMENT_SUCCESS);
+      return ws::r(1, [], Response::HTTP_OK, ms::PAYMENT_SUCCESS);
 
 
     } else {
@@ -320,7 +354,7 @@ class GameForShopController extends Controller {
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_SHOP_GAME_FAIL_TITLE, ms::FCM_SHOP_GAME_FAIL_BODY);
 
-      return ws::r(0, '', Response::HTTP_OK, ms::PAYMENT_FAILED);
+      return ws::r(0, [], Response::HTTP_OK, ms::PAYMENT_FAILED);
     }
 
   }

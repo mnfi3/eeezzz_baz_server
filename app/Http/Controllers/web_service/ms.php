@@ -114,9 +114,6 @@ class ms {
 
 
 
-
-
-
   //extend rent messages
   const EXTEND_RENT_NOT_FOR_THIS_USER = 'این محصول در لیست اجاره های شما قرار ندارد';
   const RENT_LATE_TOO_MUCH = 'تاخیر این محصول بیش از حد مجاز بوده است';
@@ -126,5 +123,12 @@ class ms {
   //admin panel messages
   const ADMIN_SETTLEMENT_REQUEST_SUCCESS = 'کاربر گرامی درخواست تسویه حساب شما تایید شد';
   const ADMIN_SETTLEMENT_PAYMENT_SUCCESS = '';
+
+  //discount
+  const DISCOUNT_NOT_EXIST = 'کد تخفیف وارد شده اشتباه است';
+  const DISCOUNT_TIME_NOT_STARTED = 'زمان شروع استفاده از این کد فرا نرسیده است';
+  const DISCOUNT_TIME_FINISHED = 'مهلت استفاده از این کد به پایان رسیده است';
+  const DISCOUNT_REMAINING_FINISHED = 'تعداد مجاز استفاده از این کد به پایان رسیده است';
+
 
 }

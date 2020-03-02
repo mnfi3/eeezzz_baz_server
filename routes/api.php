@@ -111,9 +111,13 @@ Route::get('/extend-rent-after-pay/{request_id}', 'user\GameForRentController@ex
 Route::post('/extend-rent-with-wallet', 'user\GameForRentController@extendRentWithWallet')->name('extend-rent-with-wallet');
 //-------------------------------------------------------------------------
 
+
 //verification code
 Route::post('/verification/code-request/register', 'user\VerificationCodeController@getRegisterCode');
 Route::post('/verification/code-request/reset-password', 'user\VerificationCodeController@getResetPasswordCode');
 Route::post('/verification/code-verify', 'user\VerificationCodeController@verifyCode');
 
+
+
+Route::post('/discount-check', 'user\DiscountController@discountCheck');
 

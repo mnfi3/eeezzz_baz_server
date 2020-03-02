@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\user;
 
+use App\Discount;
 use App\GameForRentRequest;
 use App\GameForRentRequestExtend;
 use App\GameInfo;
@@ -164,6 +165,7 @@ class GameForRentController extends Controller {
     $game_id = $request->game_id;
     $address_id = $request->address_id;
     $rent_type_id = $request->rent_type_id;
+    $discount_code = $request->discount_code;
     $game = GameForRent::find($game_id);
 
     if ($game->count < 1) {
@@ -180,6 +182,13 @@ class GameForRentController extends Controller {
     $game_price = $game->price;
     $rent_type = RentType::find($rent_type_id);
     $rent_price = (int)(($game_price * $rent_type->price_percent) / 100);
+    $discount = Discount::validateCode($discount_code);
+    $discount_id = 0;
+    if ($discount != null){
+      $rent_price = $rent_price - (($rent_price * $discount->percent)/100);
+      $discount_id = $discount->id;
+    }
+
     $sum_price = $game_price + $rent_price;
 
     if ($sum_price > $user_finance->user_balance) {
@@ -199,6 +208,7 @@ class GameForRentController extends Controller {
     $rent_request->game_for_rent_id = $game_id;
     $rent_request->rent_type_id = $rent_type_id;
     $rent_request->address_id = $address_id;
+    $rent_request->discount_id = $discount_id;
     $rent_request->game_price = $game_price;
     $rent_request->rent_price = $rent_price;
     $rent_request->is_sent = 0;
@@ -220,6 +230,12 @@ class GameForRentController extends Controller {
     $payment->save();
 
 
+    if ($discount != null){
+      $discount->remaining = $discount->remaining - 1;
+      $discount->save();
+    }
+
+
     FcmNotification::sendNotificationToUser($user, ms::FCM_RENT_GAME_SUCCESS_TITLE, ms::FCM_RENT_GAME_SUCCESS_BODY);
 
     return ws::r(1, [], Response::HTTP_OK, ms::PAYMENT_SUCCESS);
@@ -231,12 +247,21 @@ class GameForRentController extends Controller {
     $address_id = $request->address_id;
     $rent_type = RentType::find($request->rent_type_id);
     $game = GameForRent::find($request->game_id);
+    $discount_code = $request->discount_code;
     if ($game->count < 1) {
       return ws::r(0, '', Response::HTTP_OK, ms::NOT_EXIST_PRRODUCT);
     }
 
     $rent_price = (int)((($game->price) * ($rent_type->price_percent)) / 100);
     $game_price = $game->price;
+
+    $discount = Discount::validateCode($discount_code);
+    $discount_id = 0;
+    if ($discount != null){
+      $rent_price = $rent_price - (($rent_price * $discount->percent)/100);
+      $discount_id = $discount->id;
+    }
+
     $sum_price = $game_price + $rent_price;
     $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
 
@@ -246,7 +271,8 @@ class GameForRentController extends Controller {
       'sum_price' => $sum_price,
       'rent_type_id' => $rent_type->id,
       'rent_price' => $rent_price,
-      'address_id' => $address_id
+      'address_id' => $address_id,
+      'discount_id' => $discount_id,
     ]);
 
     $req = ZarinpalPayRequest::create([
@@ -307,6 +333,7 @@ class GameForRentController extends Controller {
       $request->game_for_rent_id = $data->game_id;
       $request->rent_type_id = $data->rent_type_id;
       $request->address_id = $data->address_id;
+      $request->discount_id = $data->discount_id;
       $request->game_price = $data->game_price;
       $request->rent_price = $data->rent_price;
       $request->is_sent = 0;
@@ -325,6 +352,12 @@ class GameForRentController extends Controller {
       $payment->bank_receipt = $RefID;
       $payment->bank_name = 'zarinpal';
       $payment->save();
+
+      if($data->discount_id != 0){
+        $discount = Discount::find($data->discount_id);
+        $discount->remaining = $discount->remaining - 1;
+        $discount->save();
+      }
 
 
 
