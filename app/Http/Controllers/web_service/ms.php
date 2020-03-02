@@ -119,6 +119,8 @@ class ms {
 
   //extend rent messages
   const EXTEND_RENT_NOT_FOR_THIS_USER = 'این محصول در لیست اجاره های شما قرار ندارد';
+  const RENT_LATE_TOO_MUCH = 'تاخیر این محصول بیش از حد مجاز بوده است';
+
 
 
   //admin panel messages

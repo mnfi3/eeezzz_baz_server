@@ -9,8 +9,6 @@ use App\Http\Controllers\Controller;
 
 use App\GameForRent;
 use App\Http\Controllers\fcm\FcmNotification;
-use App\Http\Controllers\helpers\AdminHelper;
-use App\Http\Controllers\helpers\UserHelper;
 use App\Http\Controllers\site_public\Zarinpal;
 use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
@@ -20,6 +18,7 @@ use App\User;
 use App\UserPayment;
 use App\ZarinpalPayRequest;
 use Carbon\Carbon;
+use DateInterval;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -360,7 +359,7 @@ class GameForRentController extends Controller {
 
   public function rentPenalty(Request $request){
     $user = Auth::user();
-    $game_for_rent_request = GameForRentRequest::find($request->game_for_rent_request_id);
+    $game_for_rent_request = GameForRentRequest::find($request->game_id);
     $game_for_rent = $game_for_rent_request->gameForRent;
     if($game_for_rent_request->user_id != $user->id || $game_for_rent_request->is_finish == 1){
       return ws::r(0, [], Response::HTTP_OK, ms::EXTEND_RENT_NOT_FOR_THIS_USER);
@@ -375,8 +374,9 @@ class GameForRentController extends Controller {
     $diff = $interval->format('%R%a');
     //has penalty
     if($diff < 0) {
-      $penalty_price_percent = PenaltyType::where('day_count', '=', $diff*(-1))->first()->price_percent;
-      $penalty_cost = (int)(($game_for_rent->price  * $penalty_price_percent) / 100);
+      $penalty = PenaltyType::where('day_count', '=', $diff*(-1))->first();
+      if($penalty == null) return ws::r(0, [], 200, ms::RENT_LATE_TOO_MUCH);
+      $penalty_cost = (int)(($game_for_rent->price  * $penalty->price_percent) / 100);
     }
 
     return ws::r(1, $penalty_cost);
@@ -387,7 +387,8 @@ class GameForRentController extends Controller {
   //extend rents
   public function extendRentWithWallet(Request $request){
     $user = Auth::user();
-    $game_for_rent_request = GameForRentRequest::find($request->game_for_rent_request_id);
+    $game_for_rent_request = GameForRentRequest::find($request->game_id);
+    $rent_type = RentType::find($request->rent_type_id);
     $game_for_rent = $game_for_rent_request->gameForRent;
     if($game_for_rent_request->user_id != $user->id || $game_for_rent_request->is_finish == 1){
       return ws::r(0, [], Response::HTTP_OK, ms::EXTEND_RENT_NOT_FOR_THIS_USER);
@@ -402,11 +403,12 @@ class GameForRentController extends Controller {
     $diff = $interval->format('%R%a');
     //has penalty
     if($diff < 0) {
-      $penalty_price_percent = PenaltyType::where('day_count', '=', $diff*(-1))->first()->price_percent;
-      $penalty_cost = (int)(($game_for_rent->price  * $penalty_price_percent) / 100);
+      $penalty = PenaltyType::where('day_count', '=', $diff*(-1))->first();
+      if($penalty == null) return ws::r(0, [], 200, ms::RENT_LATE_TOO_MUCH);
+      $penalty_cost = (int)(($game_for_rent->price  * $penalty->price_percent) / 100);
     }
 
-    $rent_type = RentType::find($request->rent_type_id);
+
 
     $extend_cost = (int)(($game_for_rent->price  * $rent_type->price_percent) / 100);
     $extend_cost += $penalty_cost;
@@ -474,8 +476,9 @@ class GameForRentController extends Controller {
     $diff = $interval->format('%R%a');
     //has penalty
     if($diff < 0) {
-      $penalty_price_percent = PenaltyType::where('day_count', '=', $diff*(-1))->first()->price_percent;
-      $penalty_cost = (int)(($game_for_rent->price  * $penalty_price_percent) / 100);
+      $penalty = PenaltyType::where('day_count', '=', $diff*(-1))->first();
+      if($penalty == null) return ws::r(0, [], 200, ms::RENT_LATE_TOO_MUCH);
+      $penalty_cost = (int)(($game_for_rent->price  * $penalty->price_percent) / 100);
     }
 
     $rent_type = RentType::find($request->rent_type_id);
@@ -487,7 +490,6 @@ class GameForRentController extends Controller {
 
 
 
-    $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
 
     $data =json_encode([
       'game_for_rent_request_id' => $game_for_rent_request->id,
@@ -504,6 +506,7 @@ class GameForRentController extends Controller {
       'data' => $data,
     ]);
 
+    $zarinpal = new Zarinpal(Crypt::decryptString(env('E_MERCHANT_ID')), new SoapDriver());
     json_encode($answer = $zarinpal->request(
       route('extend-rent-after-pay', ['request_id' => $req->id]),
       $extend_cost,
@@ -588,7 +591,7 @@ class GameForRentController extends Controller {
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_EXTEND_RENT_GAME_FAIL_TITLE, ms::FCM_EXTEND_RENT_GAME_FAIL_BODY);
 
-      return ws::r(0, '', Response::HTTP_OK, ms::PAYMENT_FAILED);
+      return ws::r(0, [], Response::HTTP_OK, ms::PAYMENT_FAILED);
     }
 
   }
