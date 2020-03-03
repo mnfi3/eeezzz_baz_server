@@ -22,6 +22,9 @@ class GameForRent extends Model
     return $this->belongsTo('App\GameInfo', 'game_info_id');
   }
 
+  public function rentTypes(){
+    return $this->belongsToMany('App\RentType', 'game_rent_types');
+  }
 
   public function address(){
     return $this->belongsTo('App\Address');

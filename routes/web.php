@@ -62,10 +62,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/test', function () {
-  $string = 'mohsen';
-  $enc = \App\Http\Controllers\helpers\MCrypt::encryptRSA_PUB($string);
-  $dec = \App\Http\Controllers\helpers\MCrypt::decryptRSA_PRV($enc);
-  echo "enc=$enc<br><br>dec=$dec";
+  $game = GameForRent::find(1);
+  $game->rentTypes;
+  return response()->json(($game));
 });
 
 
