@@ -52,7 +52,7 @@ class PassportController extends Controller
     if ($validator4->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_NATIONAL_NUMBER_ERROR);
     if ($validator5->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_MOBILE_ERROR);
 
-    $vc = VerificationCode::validateToken($request->token);
+    $vc = VerificationCode::validateToken($request->token, $request->mobile);
     if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);
 
     $user = User::create([
@@ -106,7 +106,7 @@ class PassportController extends Controller
 
   public function resetPassword(Request $request){
     $mobile = $request->mobile;
-    $vc = VerificationCode::validateToken($request->token);
+    $vc = VerificationCode::validateToken($request->token, $mobile);
     if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);
 
     $user = User::where('mobile', '=', $vc->mobile)->first();

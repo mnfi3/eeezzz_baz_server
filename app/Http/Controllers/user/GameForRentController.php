@@ -494,7 +494,7 @@ class GameForRentController extends Controller {
 
   public function extendRent(Request $request){
     $user = Auth::user();
-    $game_for_rent_request = GameForRentRequest::find($request->game_for_rent_request_id);
+    $game_for_rent_request = GameForRentRequest::find($request->game_id);
     $game_for_rent = $game_for_rent_request->gameForRent;
     if($game_for_rent_request->user_id != $user->id || $game_for_rent_request->is_finish == 1){
       return ws::r(0, [], Response::HTTP_OK, ms::EXTEND_RENT_NOT_FOR_THIS_USER);
@@ -546,13 +546,14 @@ class GameForRentController extends Controller {
       'extend rent'
     ));
 
+
     if (isset($answer['Authority'])) {
       $req->authority = $answer['Authority'];
       $req->save();
       $payment_url = $zarinpal->getStartPayAddress() . $answer['Authority'];
       return ws::r(1, $payment_url);
     }else{
-      return ws::r(0, [], 200, 'خطا در ارتباط با درگاه پرداخت');
+      return ws::r(0, [], 200, ms::PAYMENT_GATEWAY_ERROR);
     }
 
   }

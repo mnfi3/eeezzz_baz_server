@@ -14,7 +14,7 @@ class ms {
   const REGISTER_MOBILE_ERROR = 'این شماره تلفن قبلا در سیستم ثبت شده است';
   const REGISTER_NATIONAL_NUMBER_ERROR = 'این  کد ملی قبلا در سیستم ثبت شده است یا به اشتباه وارد شده است';
   const REGISTER_SUCCESS = 'حساب با موفقیت ایجاد شد';
-  const REGISTER_TOKEN_INVALID = 'توکن تایید موبایل اشتباه است';
+  const REGISTER_TOKEN_INVALID = ' توکن تایید موبایل اشتباه است. لطفا دوباره اقدام به دریافت کد تایید نمایید';
   const USER_NAME_NOT_AVAILABLE = 'این نام کاربری در دسترس نمی باشد لطفا نام کاربری دیگری انتخاب کنید(حداقل 5 کاراکتر)';
   const USER_NAME_AVAILABLE = 'این نام کاربری در دسترس بوده و میتوانید انتخاب کنید';
 
@@ -105,7 +105,7 @@ class ms {
 
   //sms
   const SMS_TO_MANY_CODE_REQUEST = 'تعداد درخواست شما برای ارسال کد بیش از حد می باشد';
-  const SMS_SENT_SUCCESS = 'کد فعالسازی ارسال شد';
+  const SMS_SENT_SUCCESS = 'کد تایید ارسال شد';
   const SMS_MOBILE_INVALID = 'شماره تلفن وارد شده اشتباه است';
   const SMS_MOBILE_USER_NOT_FOUND = 'کاربری با این شماره یافت نشد';
   const SMS_REGISTER_MOBILE_DUPLICATE = 'این شماره تلفن از قبل در سیستم ثبت شده است';
@@ -129,6 +129,8 @@ class ms {
   const DISCOUNT_TIME_NOT_STARTED = 'زمان شروع استفاده از این کد فرا نرسیده است';
   const DISCOUNT_TIME_FINISHED = 'مهلت استفاده از این کد به پایان رسیده است';
   const DISCOUNT_REMAINING_FINISHED = 'تعداد مجاز استفاده از این کد به پایان رسیده است';
+
+  const PAYMENT_GATEWAY_ERROR = 'خطا در ارتباط با درگاه پرداخت';
 
 
 }

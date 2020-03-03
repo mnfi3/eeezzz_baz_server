@@ -115,6 +115,7 @@ Route::post('/extend-rent-with-wallet', 'user\GameForRentController@extendRentWi
 //verification code
 Route::post('/verification/code-request/register', 'user\VerificationCodeController@getRegisterCode');
 Route::post('/verification/code-request/reset-password', 'user\VerificationCodeController@getResetPasswordCode');
+Route::get('/verification/code-request/settlement', 'user\VerificationCodeController@getSettlementCode');
 Route::post('/verification/code-verify', 'user\VerificationCodeController@verifyCode');
 
 

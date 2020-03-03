@@ -9,6 +9,7 @@ use App\SettlementRequest;
 use App\User;
 use App\UserFinance;
 use App\UserPayment;
+use App\VerificationCode;
 use App\ZarinpalPayRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -152,10 +153,17 @@ class UserFinanceController extends Controller {
 
 
   public function settlementRequest(Request $request) {
-
     $user = Auth::user();
     $finance = $user->finance;
-    $settlement = $user->settlements()->where('is_seen', '=', 0)->first();
+
+    //check verification token
+    $mobile = $user->mobile;
+    $vc = VerificationCode::validateToken($request->token, $mobile);
+    if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);
+    $vc->expireToken();
+    $vc->delete();
+
+    $settlement = $user->settlements()->orderBy('id', 'desc')->where('is_seen', '=', 0)->first();
     if ($settlement != null){
       return ws::r(0, [], Response::HTTP_OK, ms::SETTLEMENT_REQUEST_DUPLICATE);
     }
@@ -199,6 +207,8 @@ class UserFinanceController extends Controller {
 
     return ws::r(1, $settlement, Response::HTTP_OK, ms::SETTLEMENT_REQUEST_SUCCESS);
   }
+
+
 
 
   public function lastSettlement(){
