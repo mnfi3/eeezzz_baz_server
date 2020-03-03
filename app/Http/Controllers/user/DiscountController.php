@@ -5,6 +5,7 @@ namespace App\Http\Controllers\user;
 use App\Discount;
 use App\Http\Controllers\web_service\ms;
 use App\Http\Controllers\web_service\ws;
+use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -23,9 +24,12 @@ class DiscountController extends Controller
     $finished_at = new DateTime($discount->finished_at);
     $now = new DateTime("now");
     $interval = date_diff($started_at, $now);
+    $interval = $interval->format('%R%a');
+
     if ($interval == '-0' || $interval < 0) return ws::r(0, [], 200, ms::DISCOUNT_TIME_NOT_STARTED);
 
     $interval = date_diff($now, $finished_at);
+    $interval = $interval->format('%R%a');
     if ($interval == '-0' || $interval < 0) return ws::r(0, [], 200, ms::DISCOUNT_TIME_FINISHED);
 
     if ($discount->remaining < 1) return ws::r(0, [], 200, ms::DISCOUNT_REMAINING_FINISHED);

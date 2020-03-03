@@ -73,9 +73,9 @@ Route::get('/test2', function () {
   $datetime1 = date_create('2020-03-1 15:20:38');
   $datetime2 = date_create('2020-03-1 15:00:00');
   $interval = date_diff($datetime1, $datetime2);
-//  echo $interval;
   $a = $interval->format('%R%a');
-  if ($a=='-0') echo 'hello';
+  echo $a;
+//  if ($a=='-0') echo 'hello';
 //  echo $a . '<br>';
 
 

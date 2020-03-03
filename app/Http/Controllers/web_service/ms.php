@@ -130,7 +130,9 @@ class ms {
   const DISCOUNT_TIME_FINISHED = 'مهلت استفاده از این کد به پایان رسیده است';
   const DISCOUNT_REMAINING_FINISHED = 'تعداد مجاز استفاده از این کد به پایان رسیده است';
 
+  //payment
   const PAYMENT_GATEWAY_ERROR = 'خطا در ارتباط با درگاه پرداخت';
+  const ZARINPAL_AMOUNT_TO_LOW = 'مبلغ قابل پرداخت بسیار کم می باشد';
 
 
 }

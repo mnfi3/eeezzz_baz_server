@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\site_public;
 
+use App\Http\Controllers\web_service\ms;
+use App\Http\Controllers\web_service\ws;
 use Zarinpal\Drivers\DriverInterface;
 use Zarinpal\Drivers\RestDriver;
 
@@ -38,6 +40,8 @@ class Zarinpal
    */
   public function request($callbackURL, $Amount, $Description, $Email = null, $Mobile = null)
   {
+    if($Amount < 100) return ws::r(0, '', 200, ms::ZARINPAL_AMOUNT_TO_LOW);
+
     $inputs = [
       'MerchantID'  => $this->merchantID,
       'CallbackURL' => $callbackURL,
