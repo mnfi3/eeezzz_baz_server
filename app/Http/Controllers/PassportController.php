@@ -105,6 +105,16 @@ class PassportController extends Controller
 
 
   public function resetPassword(Request $request){
+    $data = $request->toArray();
+    $validator5 = Validator::make($data, [
+      'mobile' => 'required|max:11|min:11'
+    ]);
+    $validator3 = Validator::make($data, [
+      'password' => 'required|string|min:6'
+    ]);
+    if ($validator3->fails()) return ws::r(0, [], Response::HTTP_OK , ms::REGISTER_PASSWORD_ERROR);
+    if ($validator5->fails()) return ws::r(0, [], Response::HTTP_OK , ms::MOBILE_NOT_VALID);
+
     $mobile = $request->mobile;
     $vc = VerificationCode::validateToken($request->token, $mobile);
     if($vc == null) return ws::r(0, [], Response::HTTP_OK,ms::REGISTER_TOKEN_INVALID);

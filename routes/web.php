@@ -14,9 +14,43 @@ use Illuminate\Support\Facades\Mail;
 use Ipecompany\Smsirlaravel\Smsirlaravel;
 
 
+
+
+
+
+//ali api
 Route::get('/', function () {
-    return view('welcome');
+  return view('index');
 });
+
+Route::get('/blog', function () {
+  return view('blog');
+});
+
+Route::get('/blog/details', function () {
+  return view('blog-details');
+});
+
+Route::get('/successfullPayment', function () {
+  return view('successfull-payment');
+});
+
+Route::get('/failedPayment', function () {
+  return view('failed-payment');
+});
+
+Route::get('/terms', function () {
+  return view('terms');
+});
+
+Route::get('/about', function () {
+  return view('about');
+});
+
+
+
+
+
 
 Route::get('/test-sms', function () {
 //  Smsirlaravel::ultraFastSend(['user'=>'محسن فرجامی','verificationCode'=>'1375'],20565,'09145821998');

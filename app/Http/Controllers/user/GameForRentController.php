@@ -217,6 +217,9 @@ class GameForRentController extends Controller {
     $rent_request->is_returned = 0;
     $rent_request->finished_at = Carbon::now()->addDays($rent_type->day_count);
     $rent_request->save();
+    $id = $rent_request->id;
+    $rent_request->order_number = 'rw-' . (1234 + $id);
+    $rent_request->save();
 
 
     $payment = new UserPayment();
@@ -342,6 +345,10 @@ class GameForRentController extends Controller {
       $request->is_returned = 0;
       $request->finished_at = Carbon::now()->addDays($rent_type->day_count);
       $request->save();
+      $id = $request->id;
+      $request->order_number = 'rp-' . (1234 + $id);
+      $request->save();
+
 
       $payment = new UserPayment();
       $payment->user_id = $user->id;
@@ -374,7 +381,7 @@ class GameForRentController extends Controller {
       $payment = new UserPayment();
       $payment->user_id = $user->id;
       $payment->paymentable_id = $data->game_id;
-      $payment->paymentable_type = 'App\GameForRent';
+      $payment->paymentable_type = 'App\GameForShopRequest';
       $payment->amount = $data->sum_price;
       $payment->is_success = 0;
       $payment->bank_receipt = '';
@@ -463,6 +470,7 @@ class GameForRentController extends Controller {
       'user_id' => $user->id,
       'game_for_rent_request_id' => $game_for_rent_request->id,
       'rent_type_id' => $rent_type->id,
+      'extend_cost' => $extend_cost,
       'penalty_cost' => $penalty_cost,
     ]);
 
@@ -584,6 +592,7 @@ class GameForRentController extends Controller {
         'user_id' => $user->id,
         'game_for_rent_request_id' => $game_for_rent_request->id,
         'rent_type_id' => $rent_type->id,
+        'extend_cost' => $data->extend_cost,
         'penalty_cost' => $data->penalty_cost,
       ]);
 

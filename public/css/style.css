@@ -1960,7 +1960,7 @@ h1.page-error sup{
     #loader{
         display: block;
         border:none;
-        background: #fff url(../images/AjaxLoader.gif) center center no-repeat;
+        background: #fff url(images/AjaxLoader.gif) center center no-repeat;
         right: 0;
         left: 0;
         top: 0;

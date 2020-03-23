@@ -13,7 +13,7 @@ class GameInfoController extends Controller
 
 
   public function __construct() {
-    $this->middleware('auth:api', ['except' => []]);
+    $this->middleware('auth:api', ['except' => ['comments', 'photos']]);
   }
 
 
@@ -23,6 +23,7 @@ class GameInfoController extends Controller
     foreach ($comments as $comment){
       $comment->user;
     }
+    if (sizeof($comments) == 0) $comments = [];
     return ws::r(1, $comments, Response::HTTP_OK, '');
   }
 

@@ -9,7 +9,7 @@ class GameForRentRequestExtend extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['user_id', 'game_for_rent_request_id', 'rent_type_id'];
+    protected $fillable = ['user_id', 'game_for_rent_request_id', 'rent_type_id', 'extend_cost', 'penalty_cost'];
 
 
 
@@ -24,6 +24,10 @@ class GameForRentRequestExtend extends Model
     }
 
     public function rentType(){
-      return $this->hasOne('App\RentType');
+      return $this->belongsTo('App\RentType');
+    }
+
+    public function payment(){
+      return $this->morphOne('App\UserPayment', 'paymentable');
     }
 }

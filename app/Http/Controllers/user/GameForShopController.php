@@ -194,6 +194,9 @@ class GameForShopController extends Controller {
     $shop_request->is_delivered = 0;
     $shop_request->is_finish = 0;
     $shop_request->save();
+    $id = $shop_request->id;
+    $shop_request->order_number = 'shw-' . (1234 + $id);
+    $shop_request->save();
 
 
 
@@ -277,9 +280,6 @@ class GameForShopController extends Controller {
   }
 
 
-
-
-
   public function shopGameAfterPay($request_id) {
     $z_request = ZarinpalPayRequest::find($request_id);
     if ($z_request->is_verified == 1) return redirect('/');
@@ -315,6 +315,9 @@ class GameForShopController extends Controller {
       $request->is_delivered = 0;
       $request->is_finish = 0;
       $request->save();
+      $id = $request->id;
+      $request->order_number = 'shp-' . (1234 + $id);
+      $request->save();
 
       $payment = new UserPayment();
       $payment->user_id = $user->id;
@@ -345,7 +348,7 @@ class GameForShopController extends Controller {
       $payment = new UserPayment();
       $payment->user_id = $user->id;
       $payment->paymentable_id = $data->game_id;
-      $payment->paymentable_type = 'App\GameForShop';
+      $payment->paymentable_type = 'App\GameForShopRequest';
       $payment->amount = $z_request->amount;
       $payment->is_success = 0;
       $payment->bank_receipt = '';
