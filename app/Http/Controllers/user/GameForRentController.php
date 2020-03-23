@@ -486,11 +486,16 @@ class GameForRentController extends Controller {
     $payment->save();
 
 
-    $date = new DateTime('now');
+    if($diff < 0) {
+      $date = new DateTime('now');
+    }else{
+      $date = new DateTime($game_for_rent_request->finished_at);
+    }
     $date->add(new DateInterval('P'. $rent_type->day_count .'D'));
     $time = $date->format('Y-m-d H:i:s');
     $game_for_rent_request->finished_at = $time;
     $game_for_rent_request->save();
+
 
 
     FcmNotification::sendNotificationToUser($user, ms::FCM_EXTEND_RENT_GAME_SUCCESS_TITLE, ms::FCM_EXTEND_RENT_GAME_SUCCESS_BODY);
@@ -608,7 +613,11 @@ class GameForRentController extends Controller {
       $payment->save();
 
 
-      $date = new DateTime('now');
+      if( $data->penalty_cost > 0) {
+        $date = new DateTime('now');
+      }else{
+        $date = new DateTime($game_for_rent_request->finished_at);
+      }
       $date->add(new DateInterval('P'. $rent_type->day_count .'D'));
       $time = $date->format('Y-m-d H:i:s');
       $game_for_rent_request->finished_at = $time;

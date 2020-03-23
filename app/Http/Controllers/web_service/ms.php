@@ -9,7 +9,7 @@ class ms {
   const REGISTER_NAME_ERROR = 'لطفا نام و نام خانوادگی  خود را به درستی وارد کنید';
   const REGISTER_USER_NAME_ERROR = 'این نام کاربری در سیستم وجود دارد';
   const REGISTER_PHONE_NUMBER_ERROR = 'این شماره موبایل در سیستم وجود دارد';
-  const REGISTER_EMAIL_ERROR = 'ایمیل وارد شده اشتباه است';
+  const REGISTER_EMAIL_ERROR = 'ایمیل وارد شده اشتباه است یا از قبل در سیستم وجود دارد';
   const REGISTER_PASSWORD_ERROR = 'لطفا کلمه عبور بهتری وارد کنید';
   const REGISTER_MOBILE_ERROR = 'این شماره تلفن قبلا در سیستم ثبت شده است';
   const REGISTER_NATIONAL_NUMBER_ERROR = 'این  کد ملی قبلا در سیستم ثبت شده است یا به اشتباه وارد شده است';

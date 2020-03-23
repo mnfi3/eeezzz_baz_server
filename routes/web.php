@@ -96,9 +96,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/test', function () {
-  $game = GameForRent::find(1);
-  $game->rentTypes;
-  return response()->json(($game));
+  echo PHP_OS;
+//  $game = GameForRent::find(1);
+//  $game->rentTypes;
+//  return response()->json(($game));
 });
 
 

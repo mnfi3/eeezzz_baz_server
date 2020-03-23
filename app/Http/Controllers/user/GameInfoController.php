@@ -23,8 +23,10 @@ class GameInfoController extends Controller
     foreach ($comments as $comment){
       $comment->user;
     }
-    if (sizeof($comments) == 0) $comments = [];
-    return ws::r(1, $comments, Response::HTTP_OK, '');
+    if (sizeof($comments) == 0)
+      return ws::r(0, $comments, Response::HTTP_OK, '');
+    else
+      return ws::r(1, $comments, Response::HTTP_OK, '');
   }
 
 

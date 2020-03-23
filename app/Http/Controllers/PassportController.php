@@ -34,7 +34,7 @@ class PassportController extends Controller
       'full_name' => 'required|max:50|min:5',
     ]);
     $validator2 = Validator::make($data, [
-      'email' => 'email'
+      'email' => 'email|unique:users'
     ]);
     $validator3 = Validator::make($data, [
       'password' => 'required|string|min:6'
