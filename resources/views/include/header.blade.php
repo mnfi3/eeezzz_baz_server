@@ -53,6 +53,7 @@
                     {{--</ul>--}}
                 {{--</li>--}}
 
+
                 <li class="">
                     <a href="{{url("/panel/users")}}"  data-toggle="">
                         <i class="icon-user"></i>
@@ -80,6 +81,13 @@
                     <a href="{{url("/panel/posts")}}">
                         <i class="icon-book-open"></i>
                         <span>محتوا</span>
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="{{url("/panel/sliders")}}">
+                        <i class="icon-picture"></i>
+                        <span>اسلایدر</span>
                     </a>
                 </li>
 

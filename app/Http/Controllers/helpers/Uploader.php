@@ -74,10 +74,12 @@ class Uploader {
     $image->save(public_path($resized_path));
 
 
+    $url = url('/') . '/' . $resized_path;
+
     $image = Photo::create([
       'imageable_id' => $id,
       'imageable_type' => $class_name,
-      'path' => $orignal_path,
+      'path' => $resized_path,
       'url' => $url,
       'type' => 'app_' . $type,
       'width' => 0,

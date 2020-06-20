@@ -21,10 +21,13 @@ class GameForRentRequestController extends Controller {
     foreach ($requests as $request) {
       $request->rentType;
       $request->gameForRent;
-      $request->gameForRent->gameInfo->photos;
-      $request->gameForRent->gameInfo->videos;
-      $request->gameForRent->gameInfo->genres;
-      $request->gameForRent->gameInfo->console;
+      if( $request->gameForRent != null){
+        $request->gameForRent->gameInfo->photos;
+        $request->gameForRent->gameInfo->videos;
+        $request->gameForRent->gameInfo->genres;
+        $request->gameForRent->gameInfo->console;
+      }
+
     }
     return ws::r(1, $requests, 200, '');
   }

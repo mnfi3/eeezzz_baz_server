@@ -370,8 +370,10 @@ class GameForRentController extends Controller {
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_RENT_GAME_SUCCESS_TITLE, ms::FCM_RENT_GAME_SUCCESS_BODY);
 
-//        return redirect('/');
-      return ws::r(1, '', Response::HTTP_OK, ms::PAYMENT_SUCCESS);
+      $amount = $payment->amount;
+      $receipt = $payment->bank_receipt;
+      return view('successfull-payment', compact('amount', 'receipt'));
+//      return ws::r(1, '', Response::HTTP_OK, ms::PAYMENT_SUCCESS);
 
 
     } else {
@@ -391,7 +393,8 @@ class GameForRentController extends Controller {
       FcmNotification::sendNotificationToUser($user, ms::FCM_RENT_GAME_FAIL_TITLE, ms::FCM_RENT_GAME_FAIL_BODY);
 
       //redirect to a page
-      return ws::r(0, '', Response::HTTP_OK, ms::PAYMENT_FAILED);
+      return view('failed-payment');
+//      return ws::r(0, '', Response::HTTP_OK, ms::PAYMENT_FAILED);
     }
 
   }
@@ -624,7 +627,10 @@ class GameForRentController extends Controller {
       $game_for_rent_request->save();
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_EXTEND_RENT_GAME_SUCCESS_TITLE, ms::FCM_EXTEND_RENT_GAME_SUCCESS_BODY);
-      return ws::r(1, '', Response::HTTP_OK, ms::PAYMENT_SUCCESS);
+      $amount = $payment->amount;
+      $receipt = $payment->bank_receipt;
+      return view('successfull-payment', compact('amount', 'receipt'));
+//      return ws::r(1, '', Response::HTTP_OK, ms::PAYMENT_SUCCESS);
 
     }else{
       $z_request->is_verified = 0;
@@ -643,7 +649,8 @@ class GameForRentController extends Controller {
 
       FcmNotification::sendNotificationToUser($user, ms::FCM_EXTEND_RENT_GAME_FAIL_TITLE, ms::FCM_EXTEND_RENT_GAME_FAIL_BODY);
 
-      return ws::r(0, [], Response::HTTP_OK, ms::PAYMENT_FAILED);
+      return view('failed-payment');
+//      return ws::r(0, [], Response::HTTP_OK, ms::PAYMENT_FAILED);
     }
 
   }

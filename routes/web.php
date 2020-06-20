@@ -10,6 +10,7 @@ use App\GameForRent;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Ipecompany\Smsirlaravel\Smsirlaravel;
 
@@ -96,14 +97,17 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::get('/test', function () {
-  echo PHP_OS;
-//  $game = GameForRent::find(1);
-//  $game->rentTypes;
-//  return response()->json(($game));
+  return view('failed-payment');
+  $amount = 100000;
+  $receipt = 54545454;
+  return view('successfull-payment', compact('amount', 'receipt'));
+  return Crypt::decryptString(env('E_MERCHANT_ID'));
 });
 
 
 Route::get('/test2', function () {
+  return Crypt::decryptString(env('E_MERCHANT_ID'));
+
   $datetime1 = date_create('2020-03-1 15:20:38');
   $datetime2 = date_create('2020-03-1 15:00:00');
   $interval = date_diff($datetime1, $datetime2);
@@ -201,7 +205,12 @@ Route::post('/panel/post/remove', 'admin\AdminPostController@postRemove');
 Route::get('/panel/post-edit/{id}', 'admin\AdminPostController@postEdit');
 Route::post('/panel/post/update', 'admin\AdminPostController@postUpdate');
 
-
+//slider
+Route::get('/panel/sliders', 'admin\AdminSliderController@sliders');
+Route::post('/panel/slider-insert', 'admin\AdminSliderController@sliderInsert');
+Route::get('/panel/slider-edit/{id}', 'admin\AdminSliderController@sliderEdit');
+Route::post('/panel/slider-update', 'admin\AdminSliderController@sliderUpdate');
+Route::post('/panel/slider-remove', 'admin\AdminSliderController@sliderRemove');
 
 Route::get('/panel/finance', 'admin\AdminFinanceController@settlements');
 Route::get('/panel/finance/confirm-settlement/{id}', 'admin\AdminFinanceController@confirmSettlement');

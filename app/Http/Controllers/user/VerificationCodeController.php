@@ -37,7 +37,7 @@ class VerificationCodeController extends Controller
 
     $mobile = $request->mobile;
     $vc = VerificationCode::generateCode($mobile);
-//      Smsirlaravel::sendVerification($vc->code, $mobile);
+      Smsirlaravel::sendVerification($vc->code, $mobile);
     Smsirlaravel::ultraFastSend(['VerificationCode' => $vc->code], 20565, $mobile);
     return ws::r(1, [], 200, ms::SMS_SENT_SUCCESS);
   }

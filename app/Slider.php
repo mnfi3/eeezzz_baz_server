@@ -10,6 +10,7 @@ class Slider extends Model
     use SoftDeletes;
 
 
+    protected $fillable = ['title', 'content', 'on_click'];
 
     public function photos(){
       return $this->morphMany('App\Photo', 'imageable');

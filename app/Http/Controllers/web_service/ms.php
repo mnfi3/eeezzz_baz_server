@@ -130,6 +130,8 @@ class ms {
   const DISCOUNT_TIME_NOT_STARTED = 'زمان شروع استفاده از این کد فرا نرسیده است';
   const DISCOUNT_TIME_FINISHED = 'مهلت استفاده از این کد به پایان رسیده است';
   const DISCOUNT_REMAINING_FINISHED = 'تعداد مجاز استفاده از این کد به پایان رسیده است';
+  const DISCOUNT_IS_JUST_TO_FIRST_SHOP = 'این کد تخفیف فقط برای اولین خرید معتبر است';
+  const DISCOUNT_IS_JUST_TO_FIRST_RENT = 'این کد تخفیف فقط برای اولین کرایه معتبر است';
 
   //payment
   const PAYMENT_GATEWAY_ERROR = 'خطا در ارتباط با درگاه پرداخت';

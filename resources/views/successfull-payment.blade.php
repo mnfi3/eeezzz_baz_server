@@ -19,7 +19,8 @@
     <div class=" mt-0"><img src="img/successfull.png" alt="پرداخت موفق" style="width: 190px"></div>
 
     <div class="my-2">.پرداخت با موفقیت انجام شد</div>
-    <div class="">کد پیگیری : 123644</div>
+    <div class="">مبلغ پرداخت شده : {{number_format($amount)}} تومان</div>
+    <div class="">کد پیگیری : {{$receipt}}</div>
     <a href="#return-to-app" class="text-center text-white mt-3 p-2" style="text-decoration: none;width: 170px ; border-radius: 5px;alignment: center;font-family: Vazir;font-weight: 500;font-size: 17px; background-color: #ff5c1a; border-color: antiquewhite" > بازگشت به ایزی بازی </a>
 
 </div>

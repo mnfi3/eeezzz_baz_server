@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="enamad" content="265375"/>
+    <meta name="enamad" content="441208"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
@@ -26,12 +26,12 @@
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;"> ایزی بازی </h1>
                 </h2>
-                  <p class=" py-3 my-2" style="font-size: 1.1rem;line-height: 2;color: #ffffff;">
-                  سیستم جامع کرایه،خرید،فروش واشتراک بازی های دست دوم و یا همان <strong>ایزی بازی </strong> باهدف حذف دغدغه قیمت بالای بازی های کنسولی  در سال 98 توسط تعدادی برنامه نویس عاشق بازی پایه گذاری شد.خلاصه هدف ما اینکه گیمرها بتوانند بازی های مورد علاقه شون رو ارزان تر بازی کنن. ( حالا چه آفلاین،چه آنلاین ;) )
+                <p class=" py-3 my-2" style="font-size: 1.1rem;line-height: 2;color: #ffffff;">
+                    سیستم جامع کرایه،خرید،فروش واشتراک بازی های دست دوم و یا همان <strong>ایزی بازی </strong> باهدف حذف دغدغه قیمت بالای بازی های کنسولی  در سال 98 توسط تعدادی برنامه نویس عاشق بازی پایه گذاری شد.خلاصه هدف ما اینکه گیمرها بتوانند بازی های مورد علاقه شون رو ارزان تر بازی کنن. ( حالا چه آفلاین،چه آنلاین ;) )
                 </p>
             </div>
 
-         </div>
+        </div>
     </div>
 </div>
 
@@ -40,7 +40,7 @@
         <div class="container">
             <div id="tab-1" class="tab-item tab-border">
                 <i class="fa fa-globe fa-5x"></i>
-                 <p class="hide-sm">بروز و آنلاین بازی کنید</p>
+                <p class="hide-sm">بروز و آنلاین بازی کنید</p>
             </div>
             <div id="tab-2" class="tab-item">
                 <i class="fa fa-motorcycle fa-5x"></i>
@@ -53,8 +53,8 @@
         </div>
     </section>
     {{--<div class="col-md-4 d-flex flex-column align-items-center justify-content-center">--}}
-        {{--<h3 class="text-white text-center " style="font-weight: 500; font-size: 1.3rem"> ویژگی ها </h3>--}}
-        {{--<h3 class=" text-center " style="font-weight: 500; font-size: 1.9rem;color:#d65611"> ایزی بازی  </h3>--}}
+    {{--<h3 class="text-white text-center " style="font-weight: 500; font-size: 1.3rem"> ویژگی ها </h3>--}}
+    {{--<h3 class=" text-center " style="font-weight: 500; font-size: 1.9rem;color:#d65611"> ایزی بازی  </h3>--}}
     {{--</div>--}}
 </div>
 
@@ -102,6 +102,12 @@
     </div>
 </section>
 @include('include.footer')
+
+<!---start GOFTINO code--->
+<script type="text/javascript">
+  !function(){var a=window,d=document;function g(){var g=d.createElement("script"),s="https://www.goftino.com/widget/nR8q3Z",l=localStorage.getItem("goftino");g.type="text/javascript",g.async=!0,g.src=l?s+"?o="+l:s;d.getElementsByTagName("head")[0].appendChild(g);}"complete"===d.readyState?g():a.attachEvent?a.attachEvent("onload",g):a.addEventListener("load",g,!1);}();
+</script>
+<!---end GOFTINO code--->
 
 <!-- ##### All Javascript Script ##### -->
 <!-- jQuery-2.2.4 js -->
