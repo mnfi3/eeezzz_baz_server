@@ -7,25 +7,6 @@ namespace App\Http\Controllers\helpers;
 class PDate {
 
 
-
-  public static function persianTime($dateTime, $text=false) {
-    if (strlen($dateTime) < 4) return '';
-    $date = new PDate();
-    $d = explode(' ', $dateTime)[0];
-    $time = explode(' ', $dateTime)[1];
-    $result = ['date' => $date->toPersian($d, 'Y/m/d'), 'time' => $time];
-
-    if ($text) return $time . '--' . $date->toPersian($d, 'Y/m/d') ;
-    else return $result;
-  }
-
-
-
-
-
-
-
-
   var $persian_month_names=array(
     '01'=>'&#1601;&#1585;&#1608;&#1585;&#1583;&#1740;&#1606;',
     '02'=>'&#1575;&#1585;&#1583;&#1740;&#1576;&#1607;&#1588;&#1578;',
@@ -150,13 +131,13 @@ class PDate {
     if($input=='j')
     {
       $persian_d=$persian_date[2];
-      if($persian_d{0}=='0') $persian_d=substr($persian_d,1);
+      if($persian_d[0]=='0') $persian_d=substr($persian_d,1);
       return $persian_d;
     }
     if($input=='n')
     {
       $persian_n=$persian_date[1];
-      if($persian_n{0}=='0') $persian_n=substr($persian_n,1);
+      if($persian_n[0]=='0') $persian_n=substr($persian_n,1);
       return $persian_n;
     }
 
@@ -173,14 +154,14 @@ class PDate {
     if($input=='compelete')
     {
       $persian_d=$persian_date[2];
-      if($persian_d{0}=='0') $persian_d=substr($persian_d,1);
+      if($persian_d[0]=='0') $persian_d=substr($persian_d,1);
       return $this->persian_day_names[date('w')].' '.$persian_d.' '.$this->persian_month_names[$persian_date[1]].' '.$persian_date[0];
     }
   }
 
   function date($input)
   {
-    return $this->toPersian(date('Y').date('m').date('d'),$input);
+    return $this->to_date(date('Y').date('m').date('d'),$input);
   }
 
   public function toGregorian($j_date)
@@ -205,9 +186,6 @@ class PDate {
     $day[d]=bcdiv(bcdiv(bcdiv($sec-time(),60),60),24);
     return $day;
   }
-
-
-
 
 
 }

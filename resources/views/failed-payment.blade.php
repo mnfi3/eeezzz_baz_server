@@ -16,7 +16,7 @@
 <body>
 <div class="d-flex flex-column justify-content-center align-items-center">
     <div class=" mt-5" style="font-weight: 900;font-size: 1.9rem;color:#ff5c1a ">ایزی بازی</div>
-    <div class=" mt-0"><img src="img/fail.png" alt="پرداخت موفق" style="width: 190px"></div>
+    <div class=" mt-0"><img src="{{asset('img/fail.png')}}" alt="پرداخت موفق" style="width: 190px"></div>
 
     <div class="my-2">.پرداخت ناموفق</div>
     <a href="#return-to-app" class="text-center text-white mt-3 p-2" style="text-decoration: none;width: 170px ; border-radius: 5px;alignment: center;font-family: Vazir;font-weight: 500;font-size: 17px; background-color: #ff5c1a; border-color: antiquewhite" > بازگشت به ایزی بازی </a>

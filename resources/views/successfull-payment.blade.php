@@ -16,7 +16,7 @@
 <body>
 <div class="d-flex flex-column justify-content-center align-items-center">
     <div class=" mt-5" style="font-weight: 900;font-size: 1.9rem;color:#ff5c1a ">ایزی بازی</div>
-    <div class=" mt-0"><img src="img/successfull.png" alt="پرداخت موفق" style="width: 190px"></div>
+    <div class=" mt-0"><img src="{{asset('img/successfull.png')}}" alt="پرداخت موفق" style="width: 190px"></div>
 
     <div class="my-2">.پرداخت با موفقیت انجام شد</div>
     <div class="">مبلغ پرداخت شده : {{number_format($amount)}} تومان</div>

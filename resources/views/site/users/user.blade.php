@@ -164,7 +164,11 @@
                                     <tr>
                                         <td>1</td>
                                         {{--<td><img src="{{$currency->filename}}" height="35" class="rounded float-right" alt="{{$currency->name}}"></td>--}}
+                                        @if($rent->gameForRent != null)
                                         <td class="text-black">{{$rent->gameForRent->gameInfo->name}}</td>
+                                        @else
+                                        <td class="text-black"></td>
+                                        @endif
                                         <td>
                                             1398/09/20 ، 19:20:36
                                         </td>
@@ -311,14 +315,20 @@
 
                                         <td>
                                             <button class="custom-btn text-center" style="max-width: 150px"
-                                                    data-toggle="modal" data-target="#myModal">مشاهده
+                                                    data-toggle="modal" data-target="#myModal{{$sell->id}}">مشاهده
                                             </button>
                                         </td>
 
                                         <td>
-                                            <a class="btn btn-sm del-btn " href="#">
-                                                در حال ارسال
-                                            </a>
+                                            @if($sell->is_sent == 1)
+                                                <a class="btn btn-sm del-btn " href="#">
+                                                    ارسال شده
+                                                </a>
+                                            @else
+                                                <a class="btn btn-sm del-btn " href="#">
+                                                    در حال ارسال
+                                                </a>
+                                            @endif
                                         </td>
 
                                     </tr>
@@ -590,12 +600,14 @@
                                         <td>
                                             {{$payment->bank_receipt}}
                                         </td>
-                                        @if($payment->paymentable_type == 'App\GameForRent')
+                                        @if($payment->paymentable_type == 'App\GameForRentRequest')
                                             <td>اجاره</td>
-                                        @elseif($payment->paymentable_type == 'App\GameForShop')
+                                        @elseif($payment->paymentable_type == 'App\GameForShopRequest')
                                             <td>خرید</td>
                                         @elseif($payment->paymentable_type == 'App\UserFinance')
                                             <td>شارژ حساب</td>
+                                        @else
+                                            <td>موارد دیگر</td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -613,7 +625,7 @@
                                         </td>
                                         @if($payment->paymentable_type == 'App\UserFinance')
                                             <td>تسویه حساب</td>
-                                        @elseif($payment->paymentable_type == 'App\GameForRent')
+                                        @elseif($payment->paymentable_type == 'App\GameForRentRequest')
                                             <td>بازگشت ودیعه</td>
                                         @endif
                                     </tr>
@@ -690,22 +702,30 @@
             </div>
         @endforeach
 
-        <div class="modal fade" id="myModal" style="font-family: Vazir">
+
+        @foreach($user->gameForShopRequests as $sell)
+        <div class="modal fade" id="myModal{{$sell->id}}" style="font-family: Vazir">
             <div class="modal-dialog">
                 <div class="modal-content">
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title text-right ml-auto">اطلاعات</h4>
+                        <h4 class="modal-title text-right ml-auto">اطلاعات2</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <!-- Modal body -->
+                    @if($sell->payment != null)
                     <div class="modal-body text-right">
-                        <p> شماره پرداخت : 12345678</p>
-                        <p> مبلغ :593000</p>
-                        <p> تاریخ :1397/03/09</p>
-                        <p>زمان :13:50:20 </p>
+                        <p> شماره پرداخت : {{$sell->payment->bank_receipt}}</p>
+                        <p> مبلغ : {{number_format($sell->payment->amount)}} تومان</p>
+                        @php($date = new \App\Http\Controllers\helpers\PDate())
+                        @php($time = explode(' ', $sell->payment->created_at)[1])
+                        <p> تاریخ :{{$date->toPersian($sell->payment->created_at, 'Y/m/d')}}</p>
+                        <p>زمان :{{$time}} </p>
                     </div>
+                    @else
+                       <span>اطلاعات پرداخت موجود نیست</span>
+                    @endif
                     <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="custom-btn btn-danger" data-dismiss="modal"
@@ -715,6 +735,7 @@
                 </div>
             </div>
         </div>
+        @endforeach
 
         <!-- BEGIN PAGE JAVASCRIPT -->
         <script src="{{ asset('plugins/data-table/js/jquery.dataTables.min.js') }}"></script>

@@ -24,8 +24,8 @@ class DeviceController extends Controller
     $data = $request->toArray();
     $validator = Validator::make($data, [
       'device_type' => 'required|max:50',
-      'client_key' => 'required|max:254',
-      'fcm_token' => 'required|max:254',
+      'client_key' => 'required|max:700',
+      'fcm_token' => 'required|max:700',
     ]);
     if($validator->fails()){
       return ws::r(0, '', Response::HTTP_OK, ms::INVALID_DATA);

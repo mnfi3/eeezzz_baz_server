@@ -21,7 +21,7 @@ use Ipecompany\Smsirlaravel\Smsirlaravel;
 
 //ali api
 Route::get('/', function () {
-  return view('index');
+  return view('index2');
 });
 
 Route::get('/blog', function () {
@@ -30,14 +30,6 @@ Route::get('/blog', function () {
 
 Route::get('/blog/details', function () {
   return view('blog-details');
-});
-
-Route::get('/successfullPayment', function () {
-  return view('successfull-payment');
-});
-
-Route::get('/failedPayment', function () {
-  return view('failed-payment');
 });
 
 Route::get('/terms', function () {
