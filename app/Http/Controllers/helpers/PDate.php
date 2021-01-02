@@ -161,7 +161,7 @@ class PDate {
 
   function date($input)
   {
-    return $this->to_date(date('Y').date('m').date('d'),$input);
+    return $this->toPersian(date('Y').date('m').date('d'),$input);
   }
 
   public function toGregorian($j_date)
